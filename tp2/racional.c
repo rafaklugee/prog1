@@ -83,7 +83,7 @@ struct racional cria_r (long numerador, long denominador) {
   rac.num = numerador;
   rac.den = denominador;
 
-  return rac;
+  return simplifica_r(rac);
 }
 
 int valido_r (struct racional r) {
@@ -120,29 +120,8 @@ int compara_r (struct racional r1, struct racional r2) {
   return 0;
 }
 
-struct racional simplifica_r_ptr (struct racional r[]) {
-  if (r->den == 0)
-    return *r;
-  
-  long divisor;
-
-  divisor = mdc(r->num, r->den);
-
-  r->num = r->num / divisor;
-  r->den = r->den / divisor;
-
-/* Se forem dois negativos, troca o sinal dos dois números;
-   Se apenas o denominador for negativo, o sinal vai para o numerador. */
-  if (r->den < 0) {
-    r->num *= -1;
-    r->den *= -1;
-  }
-
-  return *r;
-}
-
 void imprime_r (struct racional r) {
-  simplifica_r_ptr (&r);
+  simplifica_r (r);
 
   if (r.den == 0) 
     printf ("NaN");
@@ -154,51 +133,6 @@ void imprime_r (struct racional r) {
     printf ("%ld", r.num);
   else
     printf ("%ld/%ld", r.num, r.den);
-}
-
-int imprime_r_sem_NaN (struct racional r) {
-  simplifica_r_ptr(&r);
-
-  if (r.den == 0) 
-    return 0;
-
-  else if (r.num == 0)
-    printf ("0");
-  else if (r.den == 1)
-    printf ("%ld", r.num);
-  else if (r.den == r.num)
-    printf ("%ld", r.num);
-  else
-    printf("%ld/%ld", r.num, r.den);
-
-  return 1;
-}
-
-void selection_sort(struct racional r[], long tam) { 
-  int i, j, idxmenor;
-  struct racional temp;
-
-  for (i = 0; i < tam - 1; i++) {
-    simplifica_r_ptr (&r[i]);
-    idxmenor = i;
-    for (j = i + 1; j < tam; j++) {
-      simplifica_r_ptr (&r[j]); // Simplifica a fração antes de comparar
-      if (compara_r(r[j], r[idxmenor]) < 0) {
-        idxmenor = j;
-      }
-    }
-      if (i != idxmenor) {
-          temp = r[i];
-          r[i] = r[idxmenor];
-          r[idxmenor] = temp;
-      }
-  }
-}
-
-void soma_inicializa (struct racional *soma) {
-  // Inicialiando a variável da soma, que será passada como parâmetro em "soma_r"
-  soma->num = 0;
-  soma->den = 1;
 }
 
 int soma_r (struct racional r1, struct racional r2, struct racional *r3) {

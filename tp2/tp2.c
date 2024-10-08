@@ -9,54 +9,73 @@
 #include "racional.h"
 #define TAM 100
 
-int imprime_r_sem_NaN (struct racional r);
 void selection_sort (struct racional r[], long tam);
-void soma_inicializa (struct racional *soma);
 
 /* programa principal */
 int main () {
-  int i, num;
+  int i, numIteracoes;
+  long num, den;
   struct racional v[TAM];
-  struct racional soma_total;
+  struct racional soma;
 
-  scanf ("%d", &num);
-  if (num <= 0 || num >= 100) {
+  scanf ("%d", &numIteracoes);
+  if (numIteracoes <= 0 || numIteracoes >= 100) {
     printf ("O numero precisa estar entre 0 e 100!\n");
     return 0;
   }
 
 // Lendo os números do vetor
-  for (i = 0; i < num; i++) {
-    scanf ("%ld", &v[i].num);
-    scanf ("%ld", &v[i].den);
+  for (i = 0; i < numIteracoes; i++) {
+    scanf ("%ld", &num);
+    scanf ("%ld", &den);
+    v[i] = cria_r (num, den);
   }
 
   printf ("VETOR = ");
-  for (i = 0; i < num; i++) {
+  for (i = 0; i < numIteracoes; i++) {
     imprime_r (v[i]);
     printf (" ");
   }
 
   printf ("\nVETOR = ");
-  for (i = 0; i < num; i++) {
-    if (imprime_r_sem_NaN (v[i]))
-      printf (" ");
+  for (i = 0; i < numIteracoes; i++) {
+    imprime_r (v[i]);
+    printf (" ");
   }
 
   printf ("\nVETOR = ");
-  selection_sort (v, num); // Ordenando o vetor
-  for (i = 0; i < num; i++) {
-    if (imprime_r_sem_NaN (v[i]))
-      printf (" ");
+  selection_sort (v, numIteracoes); // Ordenando o vetor
+  for (i = 0; i < numIteracoes; i++) {
+    imprime_r (v[i]);
+    printf (" ");
   }
 
   printf ("\nSOMA = ");
-  soma_inicializa (&soma_total); // Inicializando a varíavel soma_total
-  for (i = 0; i < num; i++) {
-    soma_r (soma_total, v[i], &soma_total);
+  soma = cria_r (0, 1);
+  for (i = 0; i < numIteracoes; i++) {
+    soma_r (soma, v[i], &soma);
   }
-  imprime_r (soma_total);
+  imprime_r (soma);
 
   printf ("\n");
   return (0) ;
+}
+
+void selection_sort(struct racional r[], long tam) { 
+  int i, j, idxmenor;
+  struct racional temp;
+
+  for (i = 0; i < tam - 1; i++) {
+    idxmenor = i;
+    for (j = i + 1; j < tam; j++) {
+      if (compara_r(r[j], r[idxmenor]) < 0) {
+        idxmenor = j;
+      }
+    }
+      if (i != idxmenor) {
+          temp = r[i];
+          r[i] = r[idxmenor];
+          r[idxmenor] = temp;
+      }
+  }
 }

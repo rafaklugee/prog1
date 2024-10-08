@@ -9,18 +9,15 @@
 #include "racional.h"
 #define TAM 100
 
-void imprime_r_sem_NaN (struct racional r);
-void selection_sort(struct racional r[], long tam);
+int imprime_r_sem_NaN (struct racional r);
+void selection_sort (struct racional r[], long tam);
+void soma_inicializa (struct racional *soma);
 
 /* programa principal */
 int main () {
   int i, num;
   struct racional v[TAM];
   struct racional soma_total;
-
-// Inicialiando a variável da soma total, que será passada como parâmetro em "soma_r"
-  soma_total.num = 0;
-  soma_total.den = 1;
 
   scanf ("%d", &num);
   if (num <= 0 || num >= 100) {
@@ -42,18 +39,19 @@ int main () {
 
   printf ("\nVETOR = ");
   for (i = 0; i < num; i++) {
-    imprime_r_sem_NaN (v[i]);
-    printf (" ");
+    if (imprime_r_sem_NaN (v[i]))
+      printf (" ");
   }
 
   printf ("\nVETOR = ");
   selection_sort (v, num); // Ordenando o vetor
   for (i = 0; i < num; i++) {
-    imprime_r_sem_NaN (v[i]);
-    printf (" ");
+    if (imprime_r_sem_NaN (v[i]))
+      printf (" ");
   }
 
   printf ("\nSOMA = ");
+  soma_inicializa (&soma_total); // Inicializando a varíavel soma_total
   for (i = 0; i < num; i++) {
     soma_r (soma_total, v[i], &soma_total);
   }

@@ -156,11 +156,12 @@ void imprime_r (struct racional r) {
     printf ("%ld/%ld", r.num, r.den);
 }
 
-void imprime_r_sem_NaN (struct racional r) {
+int imprime_r_sem_NaN (struct racional r) {
   simplifica_r_ptr(&r);
-  // Usar o valido...
+
   if (r.den == 0) 
-    return;
+    return 0;
+
   else if (r.num == 0)
     printf ("0");
   else if (r.den == 1)
@@ -169,6 +170,8 @@ void imprime_r_sem_NaN (struct racional r) {
     printf ("%ld", r.num);
   else
     printf("%ld/%ld", r.num, r.den);
+
+  return 1;
 }
 
 void selection_sort(struct racional r[], long tam) { 
@@ -192,6 +195,11 @@ void selection_sort(struct racional r[], long tam) {
   }
 }
 
+void soma_inicializa (struct racional *soma) {
+  // Inicialiando a variável da soma, que será passada como parâmetro em "soma_r"
+  soma->num = 0;
+  soma->den = 1;
+}
 
 int soma_r (struct racional r1, struct racional r2, struct racional *r3) {
   if (r3 == NULL || !valido_r(r1) || !valido_r(r2))

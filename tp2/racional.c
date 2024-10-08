@@ -112,8 +112,8 @@ struct racional sorteia_r (long min, long max) {
 }
 
 int compara_r (struct racional r1, struct racional r2) {
-  simplifica_r (r1);
-  simplifica_r (r2);
+  simplifica_r(r1);
+  simplifica_r(r2);
 
   // A multiplicação cruzada retornará o racional de maior/menor valor
   long a = r1.num * r2.den;
@@ -160,7 +160,7 @@ void imprime_r (struct racional r) {
   else if (r.den == r.num)
     printf ("%ld ", r.num);
   else
-    printf("%ld/%ld ", r.num, r.den);
+    printf ("%ld/%ld ", r.num, r.den);
 }
 
 void imprime_r_sem_NaN (struct racional r) {
@@ -201,7 +201,7 @@ void selection_sort(struct racional r[], long tam) {
 
 
 int soma_r (struct racional r1, struct racional r2, struct racional *r3) {
-  if (r3 == NULL)
+  if (r3 == NULL || !valido_r(r1) || !valido_r(r2))
     return 0;
 
   long denComum;
@@ -214,13 +214,13 @@ int soma_r (struct racional r1, struct racional r2, struct racional *r3) {
   r3->num = r1.num + r2.num;
   r3->den = denComum;
 
-  simplifica_r_ptr (r3);
+  *r3 = simplifica_r(*r3);
 
   return 0;
 }
 
 int subtrai_r (struct racional r1, struct racional r2, struct racional *r3) {
-  if (r3 == NULL)
+  if (r3 == NULL || !valido_r(r1) || !valido_r(r2))
     return 0;
 
   long denComum;
@@ -239,7 +239,7 @@ int subtrai_r (struct racional r1, struct racional r2, struct racional *r3) {
 }
 
 int multiplica_r (struct racional r1, struct racional r2, struct racional *r3) {
-  if (r3 == NULL)
+  if (r3 == NULL || !valido_r(r1) || !valido_r(r2))
     return 0;
   
   r3->num = r1.num * r2.num;
@@ -251,7 +251,7 @@ int multiplica_r (struct racional r1, struct racional r2, struct racional *r3) {
 }
 
 int divide_r (struct racional r1, struct racional r2, struct racional *r3) {
-  if (r3 == NULL)
+  if (r3 == NULL || !valido_r(r1) || !valido_r(r2))
     return 0;
   
   r3->num = r1.num * r2.den;

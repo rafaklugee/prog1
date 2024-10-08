@@ -20,12 +20,13 @@ int main () {
   struct racional v[TAM];
   struct racional soma_total;
 
+//Inicialiando a variável da soma total, que será passada como parâmetro em "soma_r"
   soma_total.num = 0;
   soma_total.den = 1;
 
   scanf ("%d", &num);
   if (num <= 0 || num >= 100) {
-    printf ("O numero precisa estar entre 0 e 100!");
+    printf ("O numero precisa estar entre 0 e 100!\n");
     return 0;
   }
 
@@ -36,23 +37,23 @@ int main () {
   }
 
   printf ("VETOR = ");
-  for (i = 0; i < num; i++) {
+  for (i = 0; i < num; i++)
     imprime_r (v[i]);
-  }
-  printf ("\nVETOR = ");
-  for (i = 0; i < num; i++) {
-    imprime_r_sem_NaN (v[i]);
-  }
-  printf ("\nVETOR = ");
-  selection_sort (v, num);
-  for (i = 0; i < num; i++) {
-    imprime_r_sem_NaN (v[i]);
-  }
-  printf ("\nVETOR = ");
-  for (i = 0; i < num; i++) {
-    soma_r (soma_total, v[i], &soma_total);
-    printf ("apos soma %d: %ld/%ld\n", i, soma_total.num, soma_total.den);
-  }
 
+  printf ("\nVETOR = ");
+  for (i = 0; i < num; i++)
+    imprime_r_sem_NaN (v[i]);
+
+  printf ("\nVETOR = ");
+  selection_sort (v, num); // Ordenando o vetor
+  for (i = 0; i < num; i++)
+    imprime_r_sem_NaN (v[i]);
+
+  printf ("\nSOMA = ");
+  for (i = 0; i < num; i++)
+    soma_r (soma_total, v[i], &soma_total);
+  imprime_r (soma_total);
+
+  printf ("\n");
   return (0) ;
 }

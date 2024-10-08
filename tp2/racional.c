@@ -8,16 +8,9 @@
  * funções auxiliares para facilitar a implementação daquelas funções.
 */
 
-/* coloque aqui seus includes (primeiro os <...>, depois os "...") */
 #include <stdio.h>
 #include <stdlib.h>
 #include "racional.h"
-
-/*
- * Implemente aqui as funcoes definidas no racionais.h; caso precise,
- * pode definir aqui funcoes auxiliares adicionais, que devem ser usadas
- * somente neste arquivo.
-*/
 
 /* retorna um número aleatório entre min e max, inclusive. */
 long aleat (long min, long max) {
@@ -152,30 +145,30 @@ void imprime_r (struct racional r) {
   simplifica_r_ptr (&r);
 
   if (r.den == 0) 
-    printf ("NaN ");
+    printf ("NaN");
   else if (r.num == 0)
-    printf ("0 ");
+    printf ("0");
   else if (r.den == 1)
-    printf ("%ld ", r.num);
+    printf ("%ld", r.num);
   else if (r.den == r.num)
-    printf ("%ld ", r.num);
+    printf ("%ld", r.num);
   else
-    printf ("%ld/%ld ", r.num, r.den);
+    printf ("%ld/%ld", r.num, r.den);
 }
 
 void imprime_r_sem_NaN (struct racional r) {
   simplifica_r_ptr(&r);
-
+  // Usar o valido...
   if (r.den == 0) 
     return;
   else if (r.num == 0)
-    printf ("0 ");
+    printf ("0");
   else if (r.den == 1)
-    printf ("%ld ", r.num);
+    printf ("%ld", r.num);
   else if (r.den == r.num)
-    printf ("%ld ", r.num);
+    printf ("%ld", r.num);
   else
-    printf("%ld/%ld ", r.num, r.den);
+    printf("%ld/%ld", r.num, r.den);
 }
 
 void selection_sort(struct racional r[], long tam) { 
@@ -258,7 +251,7 @@ int divide_r (struct racional r1, struct racional r2, struct racional *r3) {
   r3->den = r1.den * r2.num;
 
   if (r3->den == 0) {
-    printf ("DIVISAO INVALIDA\n");
+    printf ("NaN\n");
     exit (1);
   }
 

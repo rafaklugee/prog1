@@ -105,9 +105,6 @@ struct racional sorteia_r (long min, long max) {
 }
 
 int compara_r (struct racional r1, struct racional r2) {
-  simplifica_r(r1);
-  simplifica_r(r2);
-
   // A multiplicação cruzada retornará o racional de maior/menor valor
   long a = r1.num * r2.den;
   long b = r2.num * r1.den;
@@ -121,8 +118,6 @@ int compara_r (struct racional r1, struct racional r2) {
 }
 
 void imprime_r (struct racional r) {
-  simplifica_r (r);
-
   if (r.den == 0) 
     printf ("NaN");
   else if (r.num == 0)

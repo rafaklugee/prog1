@@ -10,15 +10,16 @@
 #define TAM 100
 
 void selection_sort (struct racional r[], long tam);
+void remove_invalido (struct racional r[], long *tam);
 
 /* programa principal */
 int main () {
-  int i, numIteracoes;
-  long num, den;
+  int i;
+  long num, den, numIteracoes;
   struct racional v[TAM];
   struct racional soma;
 
-  scanf ("%d", &numIteracoes);
+  scanf ("%ld", &numIteracoes);
   if (numIteracoes <= 0 || numIteracoes >= 100) {
     printf ("O numero precisa estar entre 0 e 100!\n");
     return 0;
@@ -38,6 +39,7 @@ int main () {
   }
 
   printf ("\nVETOR = ");
+  remove_invalido (v, &numIteracoes); // Removendo os "NaN"
   for (i = 0; i < numIteracoes; i++) {
     imprime_r (v[i]);
     printf (" ");
@@ -77,5 +79,17 @@ void selection_sort(struct racional r[], long tam) {
           r[i] = r[idxmenor];
           r[idxmenor] = temp;
       }
+  }
+}
+
+void remove_invalido (struct racional r[], long *tam) {
+  int i = 0;
+  while (i < *tam) {
+    if (!valido_r(r[i])) {
+      r[i] = r[*tam - 1];
+      (*tam)--;
+    }
+    else
+      i++;
   }
 }

@@ -74,11 +74,11 @@ void selection_sort(struct racional r[], long tam) {
         idxmenor = j;
       }
     }
-      if (i != idxmenor) {
-          temp = r[i];
-          r[i] = r[idxmenor];
-          r[idxmenor] = temp;
-      }
+    if (i != idxmenor) {
+        temp = r[i];
+        r[i] = r[idxmenor];
+        r[idxmenor] = temp;
+    }
   }
 }
 

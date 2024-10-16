@@ -12,6 +12,7 @@
 void selection_sort (struct racional **r, long tam);
 void remove_invalido (struct racional **r, long *tam);
 void libera_racionais (struct racional **r, long tam);
+void imprime_vetor (struct racional **r, long tam);
 
 /* programa principal */
 int main ()
@@ -44,27 +45,15 @@ int main ()
   }
 
   printf ("VETOR = ");
-  for (i = 0; i < tam; i++) {
-    imprime_r (v[i]);
-    if (i < tam - 1) 
-    printf (" ");
-  }
+  imprime_vetor (v, tam);
 
   printf ("\nVETOR = ");
   remove_invalido (v, &tam); // Removendo os "NaN"
-  for (i = 0; i < tam; i++) {
-    imprime_r (v[i]);
-    if (i < tam - 1)
-    printf (" ");
-  }
+  imprime_vetor (v, tam);
 
   printf ("\nVETOR = ");
   selection_sort (v, tam); // Ordenando o vetor
-  for (i = 0; i < tam; i++) {
-    imprime_r (v[i]);
-    if (i < tam - 1)
-    printf (" ");
-  }
+  imprime_vetor (v, tam);
 
   printf ("\nSOMA = ");
   soma = cria_r (0, 1);
@@ -75,18 +64,14 @@ int main ()
 
   printf ("\nVETOR = ");
   libera_racionais (v, tam);
-  for (i = 0; i < tam; i++) {
-    imprime_r (v[i]);
-    if (i < tam - 1)
-    printf (" ");
-  }
+  imprime_vetor (v, tam);
 
   // Liberando o vetor de ponteiros
   free(v);
   v = NULL;
 
   // Liberando o espaço utilizado por soma
-  destroi_r(soma);
+  destroi_r (soma);
 
   printf ("\n");
   return (0);
@@ -116,11 +101,11 @@ void selection_sort(struct racional **r, long tam) {
         idxmenor = j;
       }
     }
-      if (i != idxmenor) {
-          temp = r[i];
-          r[i] = r[idxmenor];
-          r[idxmenor] = temp;
-      }
+    if (i != idxmenor) {
+        temp = r[i];
+        r[i] = r[idxmenor];
+        r[idxmenor] = temp;
+    }
   }
 }
 
@@ -129,5 +114,13 @@ void libera_racionais (struct racional **r, long tam) {
   for (i = 0; i < tam; i++) {
     free(r[i]);
     r[i] = NULL;
+  }
+}
+
+void imprime_vetor (struct racional **r, long tam) {
+  for (int i = 0; i < tam; i++) {
+    imprime_r (r[i]);
+    if (i < tam - 1) 
+    printf (" ");
   }
 }

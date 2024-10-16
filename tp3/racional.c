@@ -130,15 +130,18 @@ int compara_r (struct racional *r1, struct racional *r2) {
   if (!valido_r(r1) || !valido_r(r2))
     return -2;
 
-  // A multiplicação cruzada retornará o racional de maior/menor valor
-  long a = r1->num * r2->den;
-  long b = r2->num * r1->den;
+  long a, b, denComum;
+  
+  // Fazendo a comparação normalizando os denominadores pelo mmc
+  denComum = mmc(r1->den, r2->den);
 
-  // ARRUMAR ESSA FUNÇÃO --> FAZER A COMPARAÇÃO PELO MMC DOS DENOMINADORES
+  // Adicionando uma variável temporária para não alterar o valor de r1 e r2
+  a = r1->num * (denComum/r1->den);
+  b = r2->num * (denComum/r2->den);
 
-  if (a < b)
+  if (a < b) 
     return -1;
-  else if (b > a)
+  else if (b > a) 
     return 1;
 
   return 0;

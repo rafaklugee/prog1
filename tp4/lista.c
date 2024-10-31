@@ -90,11 +90,38 @@ int lista_insere (struct lista_t *lst, int item, int pos) {
 
     lst->tamanho++;
     return lst->tamanho;
-
 }
 
 int lista_retira (struct lista_t *lst, int *item, int pos) {
+    if (!lst || lst->tamanho == 0)
+        return -1;
 
+    if (pos == -1) {
+        pos = lst->tamanho - 1;
+    }
+
+    struct item_t *aux = lst->prim;
+
+    // Chegando a posição para retirada
+    for (int i = 0; i < pos; i++)
+        aux = aux->prox;
+
+    *item = aux->valor;
+
+    if (!aux->ant)
+        lst->prim = aux->prox;
+    else
+        aux->ant->prox = aux->prox;
+
+    if (!aux->prox)
+        lst->ult = aux->ant;
+    else
+        aux->prox->ant = aux->ant;
+
+    free(aux);
+
+    lst->tamanho--;
+    return lst->tamanho;
 }
 
 int lista_consulta (struct lista_t *lst, int *item, int pos) {

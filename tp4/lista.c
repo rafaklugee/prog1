@@ -125,7 +125,22 @@ int lista_retira (struct lista_t *lst, int *item, int pos) {
 }
 
 int lista_consulta (struct lista_t *lst, int *item, int pos) {
+    if (!lst || lst->tamanho == 0 || pos >= lst->tamanho)
+        return -1;
 
+    if (pos == -1) {
+        *item = lst->ult->valor;
+    }
+    else {
+        struct item_t *aux = lst->prim;
+
+        for (int i = 0; i < pos; i++)
+            aux = aux->prox;
+
+        *item = aux->valor;
+    }
+
+    return lst->tamanho;
 }
 
 int lista_procura (struct lista_t *lst, int valor) {
@@ -151,7 +166,11 @@ void lista_imprime (struct lista_t *lst) {
 
     // Passa item por item, começando do primeiro valor, até acabar
     while (item) {
-        printf ("%d ", item->valor);
+        if (!item->prox == NULL)
+            printf ("%d ", item->valor);
+        else
+            printf ("%d", item->valor);
+
         item = item->prox;
     }
 }

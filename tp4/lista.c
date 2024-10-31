@@ -40,6 +40,56 @@ struct lista_t *lista_destroi (struct lista_t *lst) {
 }
 
 int lista_insere (struct lista_t *lst, int item, int pos) {
+    if (!lst)
+        return -1;
+
+    // Adicionar condição para lista cheia...
+    
+    struct item_t *novo;
+
+    novo = malloc (sizeof(struct item_t));
+    if (!novo)
+        return -1;
+
+    novo->valor = item;
+    novo->ant = NULL;
+    novo->prox = NULL;
+
+    if (pos == -1 || pos >= lst->tamanho) {
+        if (lst->tamanho == 0) {
+            lst->prim = novo;
+            lst->ult = novo;
+        }
+        else {
+            novo->ant = lst->ult;
+            lst->ult->prox = novo;
+            lst->ult = novo;
+        }
+    } else {
+        struct item_t *aux = lst->prim;
+
+        // Chegando a posição para inserção
+        for (int i = 0; i < pos; i++)
+            aux = aux->prox;
+
+        // Ajustando os ponteiros de "novo"
+        novo->prox = aux;      
+        novo->ant = aux->ant;
+
+        // Se o valor antigo não for o primeiro valor da lista,
+        // o valor anterior a ele aponta para o próximo (novo).
+        // Caso contrário, o novo valor terá que ser o primeiro da lista; 
+        if (aux->ant) { 
+        aux->ant->prox = novo;
+        } else {
+        lst->prim = novo;
+        }
+
+        aux->ant = novo;
+    }
+
+    lst->tamanho++;
+    return lst->tamanho;
 
 }
 

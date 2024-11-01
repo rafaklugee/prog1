@@ -1,13 +1,15 @@
 // TAD lista de números inteiros
 // Carlos Maziero - DINF/UFPR, Out 2024
 //
-// Implementação do TAD - a completar
+// Implementação do TAD
 //
 // Implementação com lista encadeada dupla não-circular
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "lista.h"
+
+#define TAMANHO 1000000
 
 struct lista_t *lista_cria () {
     struct lista_t *l;
@@ -27,13 +29,13 @@ struct lista_t *lista_destroi (struct lista_t *lst) {
     if (!lst)
         return NULL;
 
-    int item, pos;
+    int item;
 
-    // Remove os itens da lista
+    // Remove os itens da lista.
     while (lista_tamanho(lst) > 0)
-        lista_retira(lst, &item, pos);
+        lista_retira(lst, &item, 0);
 
-    // Destroi a lista
+    // Destroi a lista em si.
     free(lst);
 
     return NULL;    
@@ -42,8 +44,6 @@ struct lista_t *lista_destroi (struct lista_t *lst) {
 int lista_insere (struct lista_t *lst, int item, int pos) {
     if (!lst)
         return -1;
-
-    // Adicionar condição para lista cheia...
     
     struct item_t *novo;
 
@@ -54,7 +54,9 @@ int lista_insere (struct lista_t *lst, int item, int pos) {
     novo->valor = item;
     novo->ant = NULL;
     novo->prox = NULL;
-
+    
+    // Se o tamanho da lista for 0, o primeiro elemento é igual ao último.
+    // Se a posição for -1 ou além da lista, há inserção no fim da lista.
     if (pos == -1 || pos >= lst->tamanho) {
         if (lst->tamanho == 0) {
             lst->prim = novo;
@@ -68,17 +70,18 @@ int lista_insere (struct lista_t *lst, int item, int pos) {
     } else {
         struct item_t *aux = lst->prim;
 
-        // Chegando a posição para inserção
+        // Chegando a posição para inserção.
         for (int i = 0; i < pos; i++)
             aux = aux->prox;
 
-        // Ajustando os ponteiros de "novo"
+        // Ajustando os ponteiros de "novo".
         novo->prox = aux;      
         novo->ant = aux->ant;
 
         // Se o valor antigo não for o primeiro valor da lista,
         // o valor anterior a ele aponta para o próximo (novo).
-        // Caso contrário, o novo valor terá que ser o primeiro da lista; 
+
+        // Caso contrário, o novo valor terá que ser o primeiro da lista.
         if (aux->ant) { 
         aux->ant->prox = novo;
         } else {
@@ -93,21 +96,26 @@ int lista_insere (struct lista_t *lst, int item, int pos) {
 }
 
 int lista_retira (struct lista_t *lst, int *item, int pos) {
-    if (!lst || lst->tamanho == 0)
+    if (!lst || lst->tamanho == 0 || pos >= lst->tamanho)
         return -1;
 
+    // Se posição for -1, retira o último valor.
     if (pos == -1) {
         pos = lst->tamanho - 1;
     }
 
     struct item_t *aux = lst->prim;
 
-    // Chegando a posição para retirada
+    // Chegando a posição para retirada.
     for (int i = 0; i < pos; i++)
         aux = aux->prox;
 
     *item = aux->valor;
 
+    // Se não houver um valor anterior ou um próximo valor,
+    // aux será o primeiro valor ou o último valor, respectivamente.
+    
+    // Caso contrário, há o ajuste convencional dos ponteiros.
     if (!aux->ant)
         lst->prim = aux->prox;
     else
@@ -128,12 +136,14 @@ int lista_consulta (struct lista_t *lst, int *item, int pos) {
     if (!lst || lst->tamanho == 0 || pos >= lst->tamanho)
         return -1;
 
+    // Se posição for -1, retorna o último valor.
     if (pos == -1) {
         *item = lst->ult->valor;
     }
     else {
         struct item_t *aux = lst->prim;
 
+        // Capturando a posição do valor.
         for (int i = 0; i < pos; i++)
             aux = aux->prox;
 
@@ -144,7 +154,22 @@ int lista_consulta (struct lista_t *lst, int *item, int pos) {
 }
 
 int lista_procura (struct lista_t *lst, int valor) {
+    if (!lst || lst->tamanho == 0)
+        return -1;
 
+    int tam = lst->tamanho;
+
+    struct item_t *aux = lst->prim;
+
+    // Na primeira vez que encontrar o valor passado, retorna de imediato.
+    for (int i = 0 ; i < tam; i++) {
+        if (aux->valor == valor) {
+            return i;
+        }
+        aux = aux->prox;
+    }
+
+    return -1;
 }
 
 int lista_tamanho (struct lista_t *lst) {
@@ -164,9 +189,9 @@ void lista_imprime (struct lista_t *lst) {
 
     item = lst->prim;
 
-    // Passa item por item, começando do primeiro valor, até acabar
+    // Passa item por item, começando do primeiro valor, até acabar.
     while (item) {
-        if (!item->prox == NULL)
+        if (item->prox)
             printf ("%d ", item->valor);
         else
             printf ("%d", item->valor);

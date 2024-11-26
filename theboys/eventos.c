@@ -157,7 +157,24 @@ void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *LE
     }
 }
 
-void fim (int instante) {
+void fim (int instante, struct mundo *w) {
+    int i;
+    // estatísticas gerais
+
+    // estatísticas específicas
+    for (i = 0; i < w->n_herois; i++) {
+            struct heroi *h = &w->herois[i];
+            if (h->status == 1)
+                printf ("HEROI %2d VIVO PAC %4d EXP %4d HABS [%d]", h->id, h->paciencia, h->experiencia, h->habilidades);
+            else
+                printf ("HEROI %2d MORTO PAC %4d EXP %4d HABS [%d]", h->id, h->paciencia, h->experiencia, h->habilidades);
+
+            struct base *b = &w->bases[i];
+            // VER FILA MAX DA BASE e VER MISSOES DA BASE
+            printf ("BASE %2d LOT %2d FILA MAX %2d MISSOES %d", b->id, b->lotacao, b->fila, b->missoes)
+
+            // continuar...
+    }
 /*
 encerra a simulação
 apresenta estatísticas dos heróis

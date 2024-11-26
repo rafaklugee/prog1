@@ -11,7 +11,7 @@ struct heroi {
   int velocidade;
   int experiencia;
   int base_id;
-  int status;
+  int status; // 1 = vivo; 0 = morto
 };
 
 struct base {
@@ -29,15 +29,16 @@ struct missao {
     int *habilidades;
     int perigo;
     int local_x, local_y;
+    int status; // 1 = cumprida; 0 = descumprida
 };
 
 struct mundo {
     int n_herois;
-    int herois[15];
+    struct heroi *herois;
     int n_bases;
-    int bases[3];
+    struct base *bases;
     int n_missoes;
-    int missoes[5];
+    struct missao *missoes;
     int n_habilidades;
     int tam_mundo;
     int relogio;

@@ -19,7 +19,8 @@ struct base {
     int lotacao;
     int espera;
     int local_x, local_y;
-    int num_presentes;
+    int n_presentes;
+    int n_missoes_base;
     struct heroi *presentes;
     struct fprio_t *fila;
 };
@@ -39,6 +40,8 @@ struct mundo {
     struct base *bases;
     int n_missoes;
     struct missao *missoes;
+
+    int n_cumpridas;
     int n_habilidades;
     int tam_mundo;
     int relogio;
@@ -46,7 +49,7 @@ struct mundo {
 
 struct evento {
     int instante;
-    int tipo; // espera, desiste, avisa
+    int tipo;
     struct heroi *h;
     struct base *b;
 };

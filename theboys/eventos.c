@@ -4,6 +4,7 @@
 #include "mundo.h"
 #include "fprio.h"
 #include "lista.h"
+#include "eventos.h"
 #include "conjunto.h"
 
 // cria e insere na LEF o evento CHEGA (agora + duração, H, D) -> cria ??
@@ -19,6 +20,12 @@
 #define EVENTO_CHEGA 6
 #define EVENTO_MORRE 7
 #define EVENTO_MISSAO 8
+
+// Protótipo de uma função auxiliar "cria_evento"
+struct evento *cria_evento(int instante, int tipo, struct heroi *h, struct base *b);
+
+// Função que extrai um aleatório a partir de um conjunto aleatório
+int extrai_aleat (struct cjto_t *aleat);
 
 void chega (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF) {
     h->base_id = b->id;
@@ -234,5 +241,14 @@ struct evento *cria_evento(int instante, int tipo, struct heroi *h, struct base 
     novo_evento->b = b;
 
     return novo_evento;
+}
+
+int extrai_aleat (struct cjto_t *aleat) {
+    if (!aleat)
+        return -1;
+
+    int valor = rand() % aleat->num;
+
+    return valor;
 }
 

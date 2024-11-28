@@ -3,6 +3,8 @@
 
 #include "fprio.h"
 
+// VER CJTO_T DE HABILIDADES...
+
 // Cria estrutura do herói
 struct heroi {
   int id;

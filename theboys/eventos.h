@@ -3,9 +3,9 @@
 
 void chega (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF);
 
-void espera (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF);
+void espera (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF, struct lista_t *lst);
 
-void desiste (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF);
+void desiste (int instante, struct heroi *h, struct fprio_t *LEF);
 
 void avisa (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF);
 
@@ -19,5 +19,5 @@ void morre (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF);
 
 void missao (int instante, struct missao *m);
 
-void fim (int instante);
+void fim (struct mundo *w);
 #endif

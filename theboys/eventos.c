@@ -7,10 +7,6 @@
 #include "eventos.h"
 #include "conjunto.h"
 
-// cria e insere na LEF o evento CHEGA (agora + duração, H, D) -> cria ??
-// ver como funcionam as listas (?)
-// tirar esses defines
-
 #define EVENTO_DESISTE 0
 #define EVENTO_ESPERA 1
 #define EVENTO_AVISA 2
@@ -23,13 +19,13 @@
 
 // Protótipo de uma função auxiliar para criar um evento
 struct evento *cria_evento (int instante, int tipo, struct heroi *h, struct base *b);
-// Protótipo de uma função auxiliar para extrair um número aleatório de 0..CAP-1
+// Protótipo de uma função auxiliar para extrair um número aleatório de 0..CAP
 int extrai_aleat (int cap);
 
 void chega (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF) {
     h->base_id = b->id;
 
-    int tam_fila = fprio_tamanho(b->fila);
+    int tam_fila = lista_tamanho(b->lst);
 
     if (b->lotacao != b->n_presentes && b->espera == 0)
         b->espera = 1;
@@ -63,11 +59,9 @@ void espera (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF,
     fprio_insere (LEF, evento_avisa, EVENTO_AVISA, instante);
 }
 
-void desiste (int instante, struct heroi *h, struct fprio_t *LEF) {
-    // escolhe uma base destino D aleatória das 20 bases 
-    // INICIALIZAR O MUNDO PARA ESTAR CORRETO
-    struct base *b_aleat = 0;
-    b_aleat->id = extrai_aleat(20);
+void desiste (int instante, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *LEF) {
+    // escolhe uma base destino D aleatória
+    struct base *b_aleat = &b[rand() % w->n_bases];
 
     // cria e insere na LEF o evento VIAJA (agora, H, D)
     struct evento *evento_viaja = cria_evento(instante, EVENTO_VIAJA, h, b_aleat);
@@ -84,15 +78,15 @@ void avisa (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF, 
         // adiciona H' ao conjunto de heróis presentes em B
         h->base_id = b->id;
 
-        //cria e insere na LEF o evento ENTRA (agora, H', B)
+        // cria e insere na LEF o evento ENTRA (agora, H', B)
         struct evento *evento_entra = cria_evento(instante, EVENTO_ENTRA, h, b);
         fprio_insere (LEF, evento_entra, EVENTO_ENTRA, instante);
     }
 }
 
 void entra (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF) {
-    // FAZER FUNÇÃO PARA EXTRAIR UM NUMERO ALEATORIO ENTRE [1..20]
-    int random = 5;
+    // Extraindo um número aleatório entre [0..20]
+    int random = extrai_aleat(20);
 
     // calcula TPB = tempo de permanência na base
     int TPB = 15 + h->paciencia * random;
@@ -102,18 +96,21 @@ void entra (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF) 
     fprio_insere (LEF, evento_sai, EVENTO_SAI, instante);
 }
 
-void sai (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF) {
-    // FAZER A PARTIR DE LISTA.H: retira H do conjunto de heróis presentes em B
-        //lista_retira(b, h, h->base_id);
+void sai (int instante, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *LEF, struct lista_t *lst) {
+    // retira H do conjunto de heróis presentes em B
+    int pos_heroi = lista_procura(lst, h->id);
+        if (pos_heroi == -1)
+            return;
+    lista_retira(lst, &h->id, pos_heroi);
 
-    // FAZER FUNÇÃO PARA IR PARA UMA BASE ALEATÓRIA
-    struct base *b_aleat = 0;
+    // escolhe uma base destino D aleatória
+    struct base *b_aleat = &b[rand() % w->n_bases];
 
-    //cria e insere na LEF o evento VIAJA (agora, H, D)
+    // cria e insere na LEF o evento VIAJA (agora, H, D)
     struct evento *evento_viaja = cria_evento(instante, EVENTO_VIAJA, h, b_aleat);
     fprio_insere (LEF, evento_viaja, EVENTO_VIAJA, instante);
 
-    //cria e insere na LEF o evento AVISA (agora, B)
+    // cria e insere na LEF o evento AVISA (agora, B)
     struct evento *evento_avisa = cria_evento(instante, EVENTO_AVISA, h, b);
     fprio_insere (LEF, evento_avisa, EVENTO_AVISA, instante);
 }
@@ -130,9 +127,12 @@ void viaja (int instante, struct heroi *h, struct base *i, struct base *d, struc
     fprio_insere (LEF, evento_chega, EVENTO_CHEGA, instante);
 }
 
-void morre (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF) {
-    // FAZER A PARTIR DE LISTA.H: retira H do conjunto de heróis presentes em B
-    //lista_retira(b, h, h->base_id);
+void morre (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF, struct lista_t *lst) {
+    // retira H do conjunto de heróis presentes em B
+    int pos_heroi = lista_procura(lst, h->id);
+        if (pos_heroi == -1)
+            return;
+    lista_retira(lst, &h->id, pos_heroi);
 
     // muda o status de H para morto 
     h->status = 0;
@@ -151,8 +151,8 @@ void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *LE
     struct base *base_ini = &w->bases[0];
     dis_menor = sqrt (pow(m->local_x - base_ini->local_x, 2) + pow(m->local_y - base_ini->local_y, 2));
 
-    // FAZER FUNÇÃO PARA EXTRAIR UM ALEATORIO ENTRE [0..30]
-    int random = 5;
+    // Extraindo um número aleatório entre [0..30]
+    int random = extrai_aleat(30);
     
     // calcula a distância de cada base ao local da missão M
     // encontra BMP = base mais próxima da missão cujos heróis possam cumpri-la 

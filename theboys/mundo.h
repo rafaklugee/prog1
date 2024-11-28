@@ -2,18 +2,18 @@
 #define ENTIDADES
 
 #include "fprio.h"
-
-// VER CJTO_T DE HABILIDADES...
+#include "conjunto.h"
+#include "lista.h"
 
 // Cria estrutura do herói
 struct heroi {
-  int id;
-  int *habilidades;					
+  int id;			
   int paciencia;			
   int velocidade;
   int experiencia;
   int base_id;
   int status; // 1 = vivo; 0 = morto
+  struct cjto_t *habilidades;
 };
 
 struct base {
@@ -24,15 +24,15 @@ struct base {
     int n_presentes;
     int n_missoes_base;
     struct heroi *presentes;
-    struct fprio_t *fila;
+    struct lista_t *lst;
 };
 
 struct missao {
     int id;
-    int *habilidades;
     int perigo;
     int local_x, local_y;
     int status; // 1 = cumprida; 0 = descumprida
+    struct cjto_t *habilidades;
 };
 
 struct mundo {

@@ -59,6 +59,7 @@ int main ()
     w->relogio = evento_atual->instante;
 
     // PRECISO ITERAR DE MANEIRA ESPECÍFICA...
+    // PRECISO COLOCAR AS MENSAGENS DE SIMULAÇÃO
     switch (evento_atual->tipo) {
       case EVENTO_DESISTE:
         desiste (evento_atual->instante, w->herois, w->bases, w, LEF);

@@ -19,12 +19,12 @@ struct heroi {
 struct base {
     int id;
     int lotacao;
-    int espera;
     int local_x, local_y;
     int n_presentes;
     int n_missoes_base;
-    struct heroi *presentes;
-    struct lista_t *lst;
+    int espera; // 1 = espera; 0 = não espera
+    struct cjto_t *presentes;
+    struct lista_t *lst_espera;
 };
 
 struct missao {
@@ -42,10 +42,13 @@ struct mundo {
     struct base *bases;
     int n_missoes;
     struct missao *missoes;
+    int n_habilidades;
+
+    int tempo_inicial;
+    int tempo_final;
+    int tam_mundo;
 
     int n_cumpridas;
-    int n_habilidades;
-    int tam_mundo;
     int relogio;
 };
 
@@ -55,5 +58,12 @@ struct evento {
     struct heroi *h;
     struct base *b;
 };
+
+// Protótipo de uma função auxiliar para extrair um número aleatório de 0..CAP
+// MELHORAR ESSA FUNÇÃO EXTRAI ALEAT
+int extrai_aleat (int cap);
+
+// Protótipo de uma função auxiliar para inicializar o mundo
+void cria_world (struct mundo *w);
 
 #endif

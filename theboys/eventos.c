@@ -19,13 +19,11 @@
 
 // Protótipo de uma função auxiliar para criar um evento
 struct evento *cria_evento (int instante, int tipo, struct heroi *h, struct base *b);
-// Protótipo de uma função auxiliar para extrair um número aleatório de 0..CAP
-int extrai_aleat (int cap);
 
 void chega (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF) {
     h->base_id = b->id;
 
-    int tam_fila = lista_tamanho(b->lst);
+    int tam_fila = lista_tamanho(b->lst_espera);
 
     if (b->lotacao != b->n_presentes && b->espera == 0)
         b->espera = 1;

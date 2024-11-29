@@ -1,8 +1,8 @@
-#ifndef ENTIDADES
-#define ENTIDADES
+#ifndef MUNDO
+#define MUNDO
 
-#include "fprio.h"
 #include "conjunto.h"
+#include "fprio.h"
 #include "lista.h"
 
 // Cria estrutura do herói

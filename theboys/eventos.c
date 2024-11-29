@@ -7,16 +7,6 @@
 #include "eventos.h"
 #include "conjunto.h"
 
-#define EVENTO_DESISTE 0
-#define EVENTO_ESPERA 1
-#define EVENTO_AVISA 2
-#define EVENTO_VIAJA 3
-#define EVENTO_ENTRA 4
-#define EVENTO_SAI 5
-#define EVENTO_CHEGA 6
-#define EVENTO_MORRE 7
-#define EVENTO_MISSAO 8
-
 // Protótipo de uma função auxiliar para criar um evento
 struct evento *cria_evento (int instante, int tipo, struct heroi *h, struct base *b);
 
@@ -69,17 +59,21 @@ void desiste (int instante, struct heroi *h, struct base *b, struct mundo *w, st
 }
 
 void avisa (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF, struct lista_t *lst) {
-    while (b->lotacao != b->n_presentes && b->espera) {
-        // retira primeiro herói (H') da fila de B
-        lista_retira (lst, &h->id, lst->prim->valor);
+    if (lista_tamanho(lst) > 0) {
+        while (b->lotacao != b->n_presentes && b->espera) {
+            // retira primeiro herói (H') da fila de B
+            lista_retira (lst, &h->id, lst->prim->valor);
 
-        // adiciona H' ao conjunto de heróis presentes em B
-        h->base_id = b->id;
+            // adiciona H' ao conjunto de heróis presentes em B
+            h->base_id = b->id;
 
-        // cria e insere na LEF o evento ENTRA (agora, H', B)
-        struct evento *evento_entra = cria_evento(instante, EVENTO_ENTRA, h, b);
-        fprio_insere (LEF, evento_entra, EVENTO_ENTRA, instante);
+            // cria e insere na LEF o evento ENTRA (agora, H', B)
+            struct evento *evento_entra = cria_evento(instante, EVENTO_ENTRA, h, b);
+            fprio_insere (LEF, evento_entra, EVENTO_ENTRA, instante);
+        }
     }
+    else
+        return;
 }
 
 void entra (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF) {
@@ -143,7 +137,7 @@ void morre (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF, 
 void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *LEF) {
     int i, distancia, risco;
     int dis_menor;
-    struct base *base_proxima;
+    struct base *base_proxima = NULL;
 
     // Pega o endereço da primeira base e inicializa como dis_menor
     struct base *base_ini = &w->bases[0];
@@ -219,6 +213,30 @@ void fim (struct mundo *w) {
         printf ("\nMISSOES CUMPRIDAS: %d/%d (%.1f%%)", w->n_missoes, w->n_cumpridas, missoes_t_c);
         printf ("\nTENTATIVAS/MISSAO: MIN %d, MAX %d, MEDIA %.1f", min_missao, max_missao, media_missao);
         printf ("\nTAXA MORTALIDADE: %.1f%%", taxa_mortalidade);
+}
+
+void eventos_iniciais (struct mundo *w, struct fprio_t *LEF) {
+    int instante;
+
+    // cada herói chegará em uma base aleatória em algum momento dos três primeiros dias de simulação
+    for (int i = 0; i < w->n_herois; i++) {
+        w->herois[i].base_id = extrai_aleat (0, w->n_bases - 1);
+        instante = extrai_aleat (0, 4320);
+        struct evento *evento_chega = cria_evento(instante, EVENTO_CHEGA, &w->herois[i], &w->bases[i]); // Aqui vai dar pau
+        fprio_insere(LEF, evento_chega, EVENTO_CHEGA, instante);
+    }
+
+    // cada missão deve ser agendada para ocorrer em algum momento da simulação
+    for (int i = 0; i < w->n_missoes; i++) {
+        instante = extrai_aleat (0, w->tempo_final);
+        struct evento *evento_missao = cria_evento(instante, EVENTO_MISSAO, &w->herois[i], &w->bases[i]); // Aqui também
+        fprio_insere(LEF, evento_missao, EVENTO_MISSAO, instante);
+    }
+
+    // o evento FIM deve ser agendado para o instante final da simulação
+    instante = w->tempo_final;
+    struct evento *evento_fim = cria_evento(instante, EVENTO_FIM, w->herois, w->bases);
+    fprio_insere(LEF, evento_fim, EVENTO_FIM, instante);
 }
 
 struct evento *cria_evento(int instante, int tipo, struct heroi *h, struct base *b) {

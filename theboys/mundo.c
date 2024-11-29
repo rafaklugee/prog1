@@ -35,7 +35,7 @@ void cria_mundo (struct mundo *w) {
     }
 
     // Inicializando as bases
-    w->bases = malloc(sizeof(struct heroi) * w->n_bases);
+    w->bases = malloc(sizeof(struct base) * w->n_bases);
         if (w->bases == NULL)
             return;
     for (int i = 0; i < w->n_bases; i++) {
@@ -48,7 +48,7 @@ void cria_mundo (struct mundo *w) {
     }
 
     // Inicializando as missões
-    w->missoes = malloc(sizeof(struct heroi) * w->n_missoes);
+    w->missoes = malloc(sizeof(struct missao) * w->n_missoes);
         if (w->missoes == NULL)
             return;
     for (int i = 0; i < w->n_missoes; i++) {
@@ -69,11 +69,5 @@ void cria_mundo (struct mundo *w) {
             cjto_insere(w->missoes[i].habilidades, habilidade);
         }
     }
-
-
-
-
-
-
 
 }

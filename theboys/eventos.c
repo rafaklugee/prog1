@@ -83,8 +83,8 @@ void avisa (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF, 
 }
 
 void entra (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF) {
-    // Extraindo um número aleatório entre [0..20]
-    int random = extrai_aleat(20);
+    // Extraindo um número aleatório entre [1..20]
+    int random = extrai_aleat(1, 20);
 
     // calcula TPB = tempo de permanência na base
     int TPB = 15 + h->paciencia * random;
@@ -150,7 +150,7 @@ void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *LE
     dis_menor = sqrt (pow(m->local_x - base_ini->local_x, 2) + pow(m->local_y - base_ini->local_y, 2));
 
     // Extraindo um número aleatório entre [0..30]
-    int random = extrai_aleat(30);
+    int random = extrai_aleat(0, 30);
     
     // calcula a distância de cada base ao local da missão M
     // encontra BMP = base mais próxima da missão cujos heróis possam cumpri-la 
@@ -235,11 +235,11 @@ struct evento *cria_evento(int instante, int tipo, struct heroi *h, struct base 
     return novo_evento;
 }
 
-int extrai_aleat (int cap) {
+int extrai_aleat (int ini, int cap) {
     if (cap <= 0)
         return -1;
 
-    int valor = rand() % cap;
+    int valor = ini + rand() % (cap- ini);
 
     return valor;
 }

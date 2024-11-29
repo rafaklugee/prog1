@@ -59,11 +59,10 @@ struct evento {
     struct base *b;
 };
 
-// Protótipo de uma função auxiliar para extrair um número aleatório de 0..CAP
-// MELHORAR ESSA FUNÇÃO EXTRAI ALEAT
-int extrai_aleat (int cap);
+// Protótipo de uma função auxiliar para extrair um número aleatório entre "ini" e "cap"
+int extrai_aleat (int ini, int cap);
 
 // Protótipo de uma função auxiliar para inicializar o mundo
-void cria_world (struct mundo *w);
+void cria_mundo (struct mundo *w);
 
 #endif

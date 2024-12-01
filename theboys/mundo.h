@@ -31,6 +31,7 @@ struct missao {
     int id;
     int perigo;
     int local_x, local_y;
+    int n_tentativas;
     int status; // 1 = cumprida; 0 = descumprida
     struct cjto_t *habilidades;
 };

@@ -166,8 +166,9 @@ int lista_procura (struct lista_t *lst, int valor) {
 }
 
 int lista_tamanho (struct lista_t *lst) {
-    if (!lst)
+    if (!lst) {
         return -1;
+    }
 
     return (lst->tamanho);
 }

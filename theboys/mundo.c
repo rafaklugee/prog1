@@ -16,27 +16,25 @@ void cria_mundo (struct mundo *w) {
     w->n_missoes = w->tempo_final / 100;
     w->n_cumpridas = 0;
 
-    w->herois->habilidades->cap = rand() % 10;
-    int qtd_habilidades;
-    int tam_cjto_habilidades;
-
     // Inicializando os heróis
     w->herois = malloc(sizeof(struct heroi) * w->n_herois);
-        if (w->herois == NULL)
+        if (!w->herois)
             return;
+    int qtd_habilidades;
+    int tam_cjto_habilidades = rand () % 10;
+
     for (int i = 0; i < w->n_herois; i++) {
         w->herois[i].id = i;
         w->herois[i].experiencia = 0;
         w->herois[i].paciencia = extrai_aleat(0, 100);
         w->herois[i].velocidade = extrai_aleat(50, 5000);
         qtd_habilidades = 1 + extrai_aleat(0, 2);
-        w->herois[i].habilidades = cjto_aleat(qtd_habilidades, 
-                                            w->herois->habilidades->cap);
+        w->herois[i].habilidades = cjto_aleat(qtd_habilidades, tam_cjto_habilidades);
     }
 
     // Inicializando as bases
     w->bases = malloc(sizeof(struct base) * w->n_bases);
-        if (w->bases == NULL)
+        if (!w->bases)
             return;
     for (int i = 0; i < w->n_bases; i++) {
         w->bases[i].id = i;
@@ -44,18 +42,26 @@ void cria_mundo (struct mundo *w) {
         w->bases[i].local_y = extrai_aleat(0, w->tam_mundo - 1);
         w->bases[i].lotacao = extrai_aleat(3, 7);
         w->bases[i].presentes = cjto_cria(15);
+        printf ("\ncriando lista");
         w->bases[i].lst_espera = lista_cria();
+        if (!w->bases[i].lst_espera) {
+            printf ("erro ao criar lista de espera");
+        }
+
+        printf ("\ntem esse tamanho: %d", lista_tamanho(w->bases[i].lst_espera));
     }
+    printf ("\n");
 
     // Inicializando as missões
     w->missoes = malloc(sizeof(struct missao) * w->n_missoes);
-        if (w->missoes == NULL)
+        if (!w->missoes)
             return;
     for (int i = 0; i < w->n_missoes; i++) {
         w->missoes[i].id = i;
         w->missoes[i].local_x = extrai_aleat(0, w->tam_mundo - 1);
         w->missoes[i].local_y = extrai_aleat(0, w->tam_mundo - 1);
         w->missoes[i].perigo = extrai_aleat(0, 100);
+        w->missoes[i].n_tentativas = 0;
 
         // Criando um conjunto de habilidades
         tam_cjto_habilidades = extrai_aleat(6, 10);
@@ -69,5 +75,4 @@ void cria_mundo (struct mundo *w) {
             cjto_insere(w->missoes[i].habilidades, habilidade);
         }
     }
-
 }

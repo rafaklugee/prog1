@@ -20,7 +20,6 @@ struct base {
     int id;
     int lotacao;
     int local_x, local_y;
-    int n_presentes;
     int n_missoes_base;
     int espera; // 1 = espera; 0 = não espera
     struct cjto_t *presentes;

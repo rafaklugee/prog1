@@ -40,17 +40,10 @@ void cria_mundo (struct mundo *w) {
         w->bases[i].id = i;
         w->bases[i].local_x = extrai_aleat(0, w->tam_mundo - 1);
         w->bases[i].local_y = extrai_aleat(0, w->tam_mundo - 1);
-        w->bases[i].lotacao = extrai_aleat(3, 7);
-        w->bases[i].presentes = cjto_cria(15);
-        printf ("\ncriando lista");
+        w->bases[i].lotacao = extrai_aleat(3, 10);
+        w->bases[i].presentes = cjto_cria(w->bases[i].lotacao);
         w->bases[i].lst_espera = lista_cria();
-        if (!w->bases[i].lst_espera) {
-            printf ("erro ao criar lista de espera");
-        }
-
-        printf ("\ntem esse tamanho: %d", lista_tamanho(w->bases[i].lst_espera));
     }
-    printf ("\n");
 
     // Inicializando as missões
     w->missoes = malloc(sizeof(struct missao) * w->n_missoes);

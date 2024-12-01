@@ -36,20 +36,6 @@ int main ()
 
   // criar os eventos iniciais
   eventos_iniciais(w, LEF);
-
-  struct evento *evento_atual = LEF->prim->item;
-  if (evento_atual->b == NULL) {
-    printf("\nBase do evento é NULL\n");
-  } else {
-      if (evento_atual->b->lst_espera == NULL) {
-          printf("\nLista de espera é NULL\n");
-      } else {
-          printf("\nLista de espera existe\n");
-      }
-  }
-
-  printf ("\no tamanho eh: %d\n", lista_tamanho(evento_atual->b->lst_espera));
-
   
   //relógio = 0
   w->relogio = 0;
@@ -65,10 +51,20 @@ int main ()
     fim
   até o fim da simulação
   */
-exit(1);
 
   while (w->relogio != 525600) {
-    struct evento *evento_atual = LEF->prim->item; // Tá certo isso ?
+    struct evento *evento_atual = LEF->prim->item; // Tá certo isso ? Se quiser sim mano
+      //if (evento_atual->b == NULL) {
+      //  printf("\nBase do evento é NULL\n");
+      //} else {
+      //    if (evento_atual->b->lst_espera == NULL) {
+      //        printf("\nLista de espera é NULL\n");
+      //    } else {
+      //        printf("\nLista de espera existe\n");
+      //    }
+      //}
+  //printf ("\no tamanho eh: %d\n", lista_tamanho(evento_atual->b->lst_espera));
+
 
     w->relogio = evento_atual->instante;
 
@@ -80,10 +76,10 @@ exit(1);
         desiste (evento_atual->instante, evento_atual->h, evento_atual->b, w, LEF);
         break; 
       case EVENTO_ESPERA:
-        espera (evento_atual->instante, evento_atual->h, evento_atual->b, LEF, w->bases->lst_espera);
+        espera (evento_atual->instante, evento_atual->h, evento_atual->b, LEF, evento_atual->b->lst_espera);
         break;
       case EVENTO_AVISA: 
-        avisa (evento_atual->instante, evento_atual->h, evento_atual->b, LEF, w->bases->lst_espera);
+        avisa (evento_atual->instante, evento_atual->h, evento_atual->b, LEF, evento_atual->b->lst_espera);
         break;
       case EVENTO_VIAJA:
         viaja (evento_atual->instante, evento_atual->h, evento_atual->b, evento_atual->b, LEF);
@@ -92,14 +88,13 @@ exit(1);
         entra (evento_atual->instante, evento_atual->h, evento_atual->b, LEF);
         break;
       case EVENTO_SAI:
-        sai (evento_atual->instante, evento_atual->h, evento_atual->b, w, LEF, w->bases->lst_espera);
+        sai (evento_atual->instante, evento_atual->h, evento_atual->b, w, LEF, evento_atual->b->lst_espera);
         break;
       case EVENTO_CHEGA:
-      printf ("\nbase id: %d ; lista_espera_tamanho: %d", evento_atual->b->id, lista_tamanho(evento_atual->b->lst_espera));
         chega (evento_atual->instante, evento_atual->h, evento_atual->b, LEF);
         break;
       case EVENTO_MORRE: 
-        morre (evento_atual->instante, w, evento_atual->h, evento_atual->b, LEF, w->bases->lst_espera);
+        morre (evento_atual->instante, w, evento_atual->h, evento_atual->b, LEF, evento_atual->b->lst_espera);
         break;
       //case EVENTO_MISSAO:
       //  missao (evento_atual->instante, w->missoes, w, LEF);

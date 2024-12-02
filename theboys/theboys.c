@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "conjunto.h"
 #include "lista.h"
 #include "fprio.h"
@@ -28,14 +29,17 @@ int main ()
     if (w == NULL)
       return -1;
   cria_mundo(w);
+  //printf ("\nmundo criado!");
 
   // criar a fila de eventos futuros
   struct fprio_t *LEF = fprio_cria();
     if (LEF == NULL)
       return -1;
+  //printf ("\nLEF criada!");
 
   // criar os eventos iniciais
   eventos_iniciais(w, LEF);
+  //printf ("\neventos iniciais criados!");
   
   //relógio = 0
   w->relogio = 0;
@@ -67,10 +71,10 @@ int main ()
 
 
     w->relogio = evento_atual->instante;
-
     //printf ("\nestou tratando da base: %d com lotacao %d do tipo %d com tamanho %d\n", evento_atual->b->id, evento_atual->b->id, evento_atual->tipo, lista_tamanho(evento_atual->b->lst_espera));
 
     // PRECISO ITERAR DE MANEIRA ESPECÍFICA...
+    //printf ("%d: ", evento_atual->instante);
     switch (evento_atual->tipo) {
       case EVENTO_DESISTE:
         desiste (evento_atual->instante, evento_atual->h, evento_atual->b, w, LEF);
@@ -88,7 +92,7 @@ int main ()
         entra (evento_atual->instante, evento_atual->h, evento_atual->b, LEF);
         break;
       case EVENTO_SAI:
-        sai (evento_atual->instante, evento_atual->h, evento_atual->b, w, LEF, evento_atual->b->lst_espera);
+        sai (evento_atual->instante, evento_atual->h, evento_atual->b, w, LEF);
         break;
       case EVENTO_CHEGA:
         chega (evento_atual->instante, evento_atual->h, evento_atual->b, LEF);
@@ -99,11 +103,12 @@ int main ()
       //case EVENTO_MISSAO:
       //  missao (evento_atual->instante, w->missoes, w, LEF);
       //  break;
-      // Apresentar resultados
-      case EVENTO_FIM:
-        fim (w);
-        break;
+      // apresentar resultados
+      //case EVENTO_FIM:
+      //  fim (w);
+      //  break;
     }
+    //sleep(1);
     fprio_retira(LEF, &evento_atual->tipo, &evento_atual->instante);
 
   }

@@ -21,14 +21,15 @@ void cria_mundo (struct mundo *w) {
         if (!w->herois)
             return;
     int qtd_habilidades;
-    int tam_cjto_habilidades = rand () % 10;
+    int tam_cjto_habilidades;
 
     for (int i = 0; i < w->n_herois; i++) {
         w->herois[i].id = i;
         w->herois[i].experiencia = 0;
         w->herois[i].paciencia = extrai_aleat(0, 100);
         w->herois[i].velocidade = extrai_aleat(50, 5000);
-        qtd_habilidades = 1 + extrai_aleat(0, 2);
+        tam_cjto_habilidades = rand () % w->n_habilidades + 1;
+        qtd_habilidades = extrai_aleat (1, 3);
         w->herois[i].habilidades = cjto_aleat(qtd_habilidades, tam_cjto_habilidades);
     }
 
@@ -65,7 +66,7 @@ void cria_mundo (struct mundo *w) {
         // Inserindo as habilidades no conjunto
         for (int j = 0; j < tam_cjto_habilidades; j++) {
             int habilidade = extrai_aleat(0, w->n_habilidades - 1);
-            cjto_insere(w->missoes[i].habilidades, habilidade);
+            cjto_insere(w->missoes[j].habilidades, habilidade);
         }
     }
 }

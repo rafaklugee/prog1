@@ -11,7 +11,7 @@
 #define EVENTO_SAI 5
 #define EVENTO_CHEGA 6
 #define EVENTO_MORRE 7
-#define EVENTO_MISSAO 999
+#define EVENTO_MISSAO 8
 #define EVENTO_FIM 9
 
 // ARRUMAR ORDEM DOS PARÂMETROS (DEIXAR PADRONIZADO)
@@ -26,7 +26,7 @@ void avisa (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF, 
 
 void entra (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF);
 
-void sai (int instante, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *LEF, struct lista_t *lst);
+void sai (int instante, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *LEF);
 
 void viaja (int instante, struct heroi *h, struct base *i, struct base *d, struct fprio_t *LEF);
 

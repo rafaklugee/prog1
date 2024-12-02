@@ -57,6 +57,7 @@ struct evento {
     int tipo;
     struct heroi *h;
     struct base *b;
+    struct missao *m;
 };
 
 // Protótipo de uma função auxiliar para extrair um número aleatório entre "ini" e "cap"

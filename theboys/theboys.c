@@ -40,7 +40,7 @@ int main ()
   // criar os eventos iniciais
   eventos_iniciais(w, LEF);
   //printf ("\neventos iniciais criados!");
-  
+
   //relógio = 0
   w->relogio = 0;
 
@@ -57,24 +57,12 @@ int main ()
   */
 
   while (w->relogio != 525600) {
-    struct evento *evento_atual = LEF->prim->item; // Tá certo isso ? Se quiser sim mano
-      //if (evento_atual->b == NULL) {
-      //  printf("\nBase do evento é NULL\n");
-      //} else {
-      //    if (evento_atual->b->lst_espera == NULL) {
-      //        printf("\nLista de espera é NULL\n");
-      //    } else {
-      //        printf("\nLista de espera existe\n");
-      //    }
-      //}
-  //printf ("\no tamanho eh: %d\n", lista_tamanho(evento_atual->b->lst_espera));
-
+    struct evento *evento_atual = LEF->prim->item;
 
     w->relogio = evento_atual->instante;
-    //printf ("\nestou tratando da base: %d com lotacao %d do tipo %d com tamanho %d\n", evento_atual->b->id, evento_atual->b->id, evento_atual->tipo, lista_tamanho(evento_atual->b->lst_espera));
 
-    // PRECISO ITERAR DE MANEIRA ESPECÍFICA...
-    //printf ("%d: ", evento_atual->instante);
+    // POR QUE EU NÃO POSSO PRINTAR O INSTANTE AQUI ?
+
     switch (evento_atual->tipo) {
       case EVENTO_DESISTE:
         desiste (evento_atual->instante, evento_atual->h, evento_atual->b, w, LEF);
@@ -98,11 +86,11 @@ int main ()
         chega (evento_atual->instante, evento_atual->h, evento_atual->b, LEF);
         break;
       case EVENTO_MORRE: 
-        morre (evento_atual->instante, w, evento_atual->h, evento_atual->b, LEF, evento_atual->b->lst_espera);
+        morre (evento_atual->instante, w, evento_atual->h, evento_atual->b, LEF);
         break;
-      //case EVENTO_MISSAO:
-      //  missao (evento_atual->instante, w->missoes, w, LEF);
-      //  break;
+      case EVENTO_MISSAO:
+        missao (evento_atual->instante, evento_atual->m, w, LEF);
+        break;
       // apresentar resultados
       //case EVENTO_FIM:
       //  fim (w);

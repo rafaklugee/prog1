@@ -30,7 +30,7 @@ void sai (int instante, struct heroi *h, struct base *b, struct mundo *w, struct
 
 void viaja (int instante, struct heroi *h, struct base *i, struct base *d, struct fprio_t *LEF);
 
-void morre (int instante, struct mundo *w, struct heroi *h, struct base *b, struct fprio_t *LEF, struct lista_t *lst);
+void morre (int instante, struct mundo *w, struct heroi *h, struct base *b, struct fprio_t *LEF);
 
 void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *LEF);
 

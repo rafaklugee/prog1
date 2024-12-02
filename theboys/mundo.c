@@ -7,7 +7,7 @@
 void cria_mundo (struct mundo *w) {
     // Inicializando estados do iniciais do mundo
     w->tempo_inicial = 0;
-    w->tempo_final = 525600;
+    w->tempo_final = 10000; //525600
     w->tam_mundo = 20000;
 
     w->n_habilidades = 10; // Atualizado para 10
@@ -51,6 +51,8 @@ void cria_mundo (struct mundo *w) {
         w->bases[i].local_x = extrai_aleat(0, w->tam_mundo - 1);
         w->bases[i].local_y = extrai_aleat(0, w->tam_mundo - 1);
         w->bases[i].lotacao = extrai_aleat(3, 10);
+        w->bases[i].n_missoes_base = 0;
+        w->bases[i].fila_max = 0;
         w->bases[i].presentes = cjto_cria(w->n_herois);
         w->bases[i].lst_espera = lista_cria();
     }
@@ -64,7 +66,7 @@ void cria_mundo (struct mundo *w) {
         w->missoes[i].local_x = extrai_aleat(0, w->tam_mundo - 1);
         w->missoes[i].local_y = extrai_aleat(0, w->tam_mundo - 1);
         w->missoes[i].perigo = extrai_aleat(0, 100);
-        w->missoes[i].n_tentativas = 1;
+        w->missoes[i].n_tentativas = 0;
         w->missoes[i].status = 0;
 
         // Criando um conjunto de habilidades

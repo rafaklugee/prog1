@@ -1,6 +1,7 @@
 {
     "C_Cpp.dimInactiveRegions": false,
     "files.associations": {
-        "eventos.h": "c"
+        "eventos.h": "c",
+        "conjunto.h": "c"
     }
 }

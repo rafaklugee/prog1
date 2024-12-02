@@ -56,12 +56,10 @@ int main ()
   até o fim da simulação
   */
 
-  while (w->relogio != 525600) {
+  while (w->relogio != w->tempo_final) {
     struct evento *evento_atual = LEF->prim->item;
 
     w->relogio = evento_atual->instante;
-
-    // POR QUE EU NÃO POSSO PRINTAR O INSTANTE AQUI ?
 
     switch (evento_atual->tipo) {
       case EVENTO_DESISTE:
@@ -74,7 +72,7 @@ int main ()
         avisa (evento_atual->instante, evento_atual->h, evento_atual->b, LEF, evento_atual->b->lst_espera);
         break;
       case EVENTO_VIAJA:
-        viaja (evento_atual->instante, evento_atual->h, evento_atual->b, evento_atual->b, LEF);
+        viaja (evento_atual->instante, evento_atual->h, evento_atual->b, evento_atual->b_aux, LEF);
         break;
       case EVENTO_ENTRA:
         entra (evento_atual->instante, evento_atual->h, evento_atual->b, LEF);
@@ -86,15 +84,16 @@ int main ()
         chega (evento_atual->instante, evento_atual->h, evento_atual->b, LEF);
         break;
       case EVENTO_MORRE: 
-        morre (evento_atual->instante, w, evento_atual->h, evento_atual->b, LEF);
+        morre (evento_atual->instante, evento_atual->m, evento_atual->h, evento_atual->b, LEF);
         break;
       case EVENTO_MISSAO:
         missao (evento_atual->instante, evento_atual->m, w, LEF);
         break;
       // apresentar resultados
-      //case EVENTO_FIM:
-      //  fim (w);
-      //  break;
+      case EVENTO_FIM:
+        printf("Processando evento FIM no instante %d\n", evento_atual->instante);
+        fim (w);
+        break;
     }
     //sleep(1);
     fprio_retira(LEF, &evento_atual->tipo, &evento_atual->instante);

@@ -21,6 +21,7 @@ struct base {
     int lotacao;
     int local_x, local_y;
     int n_missoes_base;
+    int fila_max;
     int espera; // 1 = espera; 0 = não espera
     struct cjto_t *presentes;
     struct lista_t *lst_espera;
@@ -57,6 +58,7 @@ struct evento {
     int tipo;
     struct heroi *h;
     struct base *b;
+    struct base *b_aux;
     struct missao *m;
 };
 

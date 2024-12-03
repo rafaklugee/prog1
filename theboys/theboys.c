@@ -26,14 +26,14 @@ int main ()
 {
   // iniciar as entidades e atributos do mundo
   struct mundo *w = malloc (sizeof(struct mundo));
-    if (w == NULL)
+    if (!w)
       return -1;
   cria_mundo(w);
   //printf ("\nmundo criado!");
 
   // criar a fila de eventos futuros
   struct fprio_t *LEF = fprio_cria();
-    if (LEF == NULL)
+    if (!LEF)
       return -1;
   //printf ("\nLEF criada!");
 
@@ -57,7 +57,13 @@ int main ()
   */
 
   while (w->relogio <= w->tempo_final) {
-    struct evento *evento_atual = LEF->prim->item;
+    
+    struct evento *evento_atual = fprio_retira(LEF, NULL, NULL);
+    if (!evento_atual) {
+      printf ("ERRO AO PEGAR O PRIMEIRO EVENTO\n");
+      exit(1);
+    }
+    
 
     w->relogio = evento_atual->instante;
 
@@ -91,12 +97,12 @@ int main ()
         break;
       // apresentar resultados
       case EVENTO_FIM:
-        printf("Processando evento FIM no instante %d\n", evento_atual->instante);
         fim (w);
         break;
     }
+    //fprio_retira(LEF, &evento_atual->tipo, &evento_atual->instante);
+    //fprio_destroi (LEF);
     //sleep(1);
-    fprio_retira(LEF, &evento_atual->tipo, &evento_atual->instante);
 
   }
 

@@ -40,7 +40,6 @@ void cria_mundo (struct mundo *w) {
         for (int k = 0; k < tam_cjto_habilidades; k++) {
             int habilidade = extrai_aleat(0, w->n_habilidades - 1);
             cjto_insere(w->herois[i].habilidades, habilidade);
-            printf ("inseri habilidade %d\n", habilidade);
         }
         // Verificando se as habilidades foram inseridas
         //for (int j = 0; j < w->n_habilidades; j++) {
@@ -88,7 +87,6 @@ void cria_mundo (struct mundo *w) {
         for (int j = 0; j < tam_cjto_habilidades; j++) {
             int habilidade = extrai_aleat(0, w->n_habilidades - 1);
             cjto_insere(w->missoes[i].habilidades, habilidade);
-            printf ("inseri habilidade %d\n", habilidade);
         }
         // Verificando se as habilidades foram inseridas
         //for (int j = 0; j < w->n_missoes; j++) {

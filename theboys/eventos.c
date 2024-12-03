@@ -313,20 +313,33 @@ void eventos_iniciais (struct mundo *w, struct fprio_t *LEF) {
         w->herois[i].base_id = extrai_aleat (0, w->n_bases - 1);
         instante = extrai_aleat (0, 4320);
         struct evento *evento_chega = cria_evento(instante, EVENTO_CHEGA, &w->herois[i], &w->bases[w->herois[i].base_id], NULL, NULL);
+        if (!evento_chega)
+            return;
         fprio_insere(LEF, evento_chega, EVENTO_CHEGA, instante);
+        printf("Evento inserido na LEF no instante %d.\n", instante);
+
     }
+    printf ("inseri todos herois!\n");
 
     // cada missão deve ser agendada para ocorrer em algum momento da simulação
     for (int i = 0; i < w->n_missoes; i++) {
         instante = extrai_aleat (0, w->tempo_final);
         struct evento *evento_missao = cria_evento(instante, EVENTO_MISSAO, NULL, NULL, NULL, &w->missoes[i]);
+        if (!evento_missao)
+            return;
         fprio_insere(LEF, evento_missao, EVENTO_MISSAO, instante);
+        printf("Evento inserido na LEF no instante %d.\n", instante);
     }
+    printf ("inseri todas missoes!\n");
 
     // o evento FIM deve ser agendado para o instante final da simulação
     instante = w->tempo_final;
     struct evento *evento_fim = cria_evento(instante, EVENTO_FIM, w->herois, w->bases, NULL, w->missoes);
+    if (!evento_fim)
+        return;
     fprio_insere(LEF, evento_fim, EVENTO_FIM, instante);
+    printf("Evento inserido na LEF no instante %d.\n", instante);
+    printf ("inseri o evento fim!\n");
 }
 
 struct evento *cria_evento (int instante, int tipo, struct heroi *h, struct base *b, struct base *b_aux, struct missao *m) {

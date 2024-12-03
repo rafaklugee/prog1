@@ -230,12 +230,11 @@ void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *LE
             risco = m->perigo / ((h->paciencia) + h->experiencia + 1);
 
             if (risco > random) {
-                printf ("ALGUM HEROI MORREU\n");
                 struct evento *evento_morre = cria_evento(instante, EVENTO_MORRE, h, base_proxima, NULL, m);
                 fprio_insere(LEF, evento_morre, EVENTO_MORRE, instante);
             }
             else {
-                w->herois[i].experiencia++;
+                h->experiencia++;
                 w->n_cumpridas++;
             }
         }
@@ -266,41 +265,42 @@ void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *LE
 }
 
 void fim (struct mundo *w) {
-    // preciso do instante ?
-    int i, n_herois_mortos;
+    int n_herois_mortos = 0;
     float media_missao = soma_missoes / w->n_missoes;
-    float missoes_t_c = (w->n_missoes/w->n_cumpridas) * 100;
+    float missoes_t_c = (w->n_cumpridas * 100) / w->n_missoes;
 
     // estatísticas específicas
-    for (i = 0; i < w->n_herois; i++) {
+    for (int i = 0; i < w->n_herois; i++) {
         struct heroi *h = &w->herois[i];
         if (h->status == 1) {
             printf ("HEROI %2d VIVO PAC %4d EXP %4d HABS [", h->id, h->paciencia, h->experiencia);
-                for (int i = 0; i < w->n_herois; i++) {
-                    if (w->herois[i].habilidades->flag[i])
-                        printf (" %d", i);
+                for (int j = 0; j < w->n_habilidades; j++) {
+                    if (h->habilidades->flag[j])
+                        printf (" %d", j);
                 }
             printf (" ]\n");
         }
         else {
             n_herois_mortos++;
             printf ("HEROI %2d MORTO PAC %4d EXP %4d HABS [", h->id, h->paciencia, h->experiencia);
-                for (int i = 0; i < w->n_herois; i++) {
-                    if (w->herois[i].habilidades->flag[i])
-                        printf (" %d", i);
+                for (int k = 0; k < w->n_habilidades; k++) {
+                    if (h->habilidades->flag[k])
+                        printf (" %d", k);
                 }
             printf (" ]\n");
         }
-        for (i = 0; i < w->n_bases; i++) {
-            struct base *b = &w->bases[i];
-            printf ("BASE %2d LOT %2d FILA MAX %2d MISSOES %d\n", b->id, b->lotacao, b->fila_max, b->n_missoes_base);
-        }
     }
-    float taxa_mortalidade = (n_herois_mortos / w->n_herois) * 100;
+
+    for (int i = 0; i < w->n_bases; i++) {
+        struct base *b = &w->bases[i];
+        printf ("BASE %2d LOT %2d FILA MAX %2d MISSOES %d\n", b->id, b->lotacao, b->fila_max, b->n_missoes_base);
+    }
+
+    float taxa_mortalidade = (n_herois_mortos * 100) / w->n_herois;
 
     // estatísticas gerais
         printf ("EVENTOS TRATADOS: %d\n", eventos_tratados);
-        printf ("MISSOES CUMPRIDAS: %d/%d (%.1f%%)\n", w->n_missoes, w->n_cumpridas, missoes_t_c);
+        printf ("MISSOES CUMPRIDAS: %d/%d (%.1f%%)\n", w->n_cumpridas, w->n_missoes, missoes_t_c);
         printf ("TENTATIVAS/MISSAO: MIN %d, MAX %d, MEDIA %.1f\n", min_missao, max_missao, media_missao);
         printf ("TAXA MORTALIDADE: %.1f%%\n", taxa_mortalidade);
 }

@@ -56,7 +56,7 @@ int main ()
   até o fim da simulação
   */
 
-  while (w->relogio != w->tempo_final) {
+  while (w->relogio <= w->tempo_final) {
     struct evento *evento_atual = LEF->prim->item;
 
     w->relogio = evento_atual->instante;

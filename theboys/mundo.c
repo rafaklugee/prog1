@@ -26,21 +26,30 @@ void cria_mundo (struct mundo *w) {
     for (int i = 0; i < w->n_herois; i++) {
         w->herois[i].id = i;
         w->herois[i].experiencia = 0;
+        w->herois[i].status = 1;
         w->herois[i].paciencia = extrai_aleat(0, 100);
         w->herois[i].velocidade = extrai_aleat(50, 5000);
 
         // Criando um conjunto de habilidades
         tam_cjto_habilidades = extrai_aleat(1, 3);
-        w->herois[i].habilidades = cjto_cria(tam_cjto_habilidades);
+        w->herois[i].habilidades = cjto_cria(w->n_habilidades);
         if (w->herois[i].habilidades == NULL)
             return;
 
         // Inserindo as habilidades no conjunto
-        for (int j = 0; j < tam_cjto_habilidades; j++) {
+        for (int k = 0; k < tam_cjto_habilidades; k++) {
             int habilidade = extrai_aleat(0, w->n_habilidades - 1);
             cjto_insere(w->herois[i].habilidades, habilidade);
+            printf ("inseri habilidade %d\n", habilidade);
         }
+        // Verificando se as habilidades foram inseridas
+        //for (int j = 0; j < w->n_habilidades; j++) {
+        //    if (w->herois[i].habilidades->flag[j])
+        //        printf (" %d", j);
+        //    }
+        //printf ("\n");
     }
+    //exit(1);
 
     // Inicializando as bases
     w->bases = malloc(sizeof(struct base) * w->n_bases);
@@ -71,7 +80,7 @@ void cria_mundo (struct mundo *w) {
 
         // Criando um conjunto de habilidades
         tam_cjto_habilidades = extrai_aleat(6, 10);
-        w->missoes[i].habilidades = cjto_cria(tam_cjto_habilidades);
+        w->missoes[i].habilidades = cjto_cria(w->n_missoes);
         if (w->missoes[i].habilidades == NULL)
             return;
 
@@ -79,6 +88,14 @@ void cria_mundo (struct mundo *w) {
         for (int j = 0; j < tam_cjto_habilidades; j++) {
             int habilidade = extrai_aleat(0, w->n_habilidades - 1);
             cjto_insere(w->missoes[i].habilidades, habilidade);
+            printf ("inseri habilidade %d\n", habilidade);
         }
+        // Verificando se as habilidades foram inseridas
+        //for (int j = 0; j < w->n_missoes; j++) {
+        //    if (w->missoes[i].habilidades->flag[j])
+        //        printf (" %d", j);
+        //    }
+        //printf ("\n");
     }
+    //exit(1);
 }

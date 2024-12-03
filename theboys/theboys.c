@@ -75,12 +75,12 @@ int main ()
 
     w->relogio = evento_atual->instante;
 
-    if (w->relogio >= 9989)
-    {
-      fprio_imprime (LEF) ;
-      printf ("\n") ;
-    }
-    printf ("### vou tratar evento tipo=%d tempo=%d\n", evento_atual->tipo, evento_atual->instante) ;
+    //if (w->relogio >= 9989)
+    //{
+    //  fprio_imprime (LEF) ;
+    //  printf ("\n") ;
+    //}
+    //printf ("### vou tratar evento tipo=%d tempo=%d\n", evento_atual->tipo, evento_atual->instante) ;
 
     switch (evento_atual->tipo) {
       case EVENTO_DESISTE:

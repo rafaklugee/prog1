@@ -46,6 +46,8 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio) {
     if (!novo)
         return -1;
 
+    printf ("## fprio insere tipo=%d prio=%d\n", tipo, prio) ;
+
     novo->item = item;
     novo->tipo = tipo;
     novo->prio = prio;
@@ -99,6 +101,8 @@ void *fprio_retira (struct fprio_t *f, int *tipo, int *prio) {
     *tipo = aux->tipo;
     *prio = aux->prio;
 
+    printf ("## fprio retira tipo=%d prio=%d\n", *tipo, *prio) ;
+    
     // Colocando um novo primeiro valor na lista.
     f->prim = aux->prox;
 

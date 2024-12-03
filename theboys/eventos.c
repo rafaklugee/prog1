@@ -16,36 +16,32 @@ int soma_missoes = 0;
 int max_missao = 0;
 int min_missao = __INT_MAX__;
 
-void chega (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF) {
-    h->base_id = b->id;
+void chega (struct evento *ev, struct fprio_t *LEF) {
+    ev->h->base_id = ev->b->id;
 
-    int tam_fila = lista_tamanho(b->lst_espera);
-    // VER ESSA QUESTÃO DE FILA DE ESPERA VAZIA...
+    int tam_fila = lista_tamanho(ev->b->lst_espera);
+
     // se há vagas em B e a fila de espera em B está vazia:
-    //if (b->lst_espera->prim)
-        //printf("DEBUG: BASE %d - lotacao: %d, presentes: %d, tam_fila: %d, paciencia: %d na fila tem [ %2d ]\n",
-          //b->id, b->lotacao, cjto_card(b->presentes), tam_fila, h->paciencia, b->lst_espera->prim->valor);
-
-    if (b->lotacao != cjto_card(b->presentes) && tam_fila == 0)
-        b->espera = 1;
+    if (ev->b->lotacao != cjto_card(ev->b->presentes) && tam_fila == 0)
+        ev->b->espera = 1;
     else
-        b->espera = (h->paciencia) > (10 * tam_fila);
+        ev->b->espera = (ev->h->paciencia) > (10 * tam_fila);
 
-    if (b->espera) {
+    if (ev->b->espera) {
         //cria e insere na LEF o evento espera;
-        struct evento *evento_espera = cria_evento(instante, EVENTO_ESPERA, h, b, NULL, NULL);
+        struct evento *evento_espera = cria_evento(ev->instante, EVENTO_ESPERA, ev->h, ev->b, NULL, NULL);
             if (!evento_espera)
                 return;
-        fprio_insere(LEF, evento_espera, EVENTO_ESPERA, instante);
-        printf ("%d: CHEGA HEROI %2d BASE %d (%2d/%2d) ESPERA\n", instante, h->id, b->id, cjto_card(b->presentes), b->lotacao);
+        fprio_insere(LEF, evento_espera, EVENTO_ESPERA, ev->instante);
+        printf ("%d: CHEGA HEROI %2d BASE %d (%2d/%2d) ESPERA\n", ev->instante, ev->h->id, ev->b->id, cjto_card(ev->b->presentes), ev->b->lotacao);
     }
     else {
         //cria e insere na LEF o evento desiste;
-        struct evento *evento_desiste = cria_evento(instante, EVENTO_DESISTE, h, b, NULL, NULL);
+        struct evento *evento_desiste = cria_evento(ev->instante, EVENTO_DESISTE, ev->h, ev->b, NULL, NULL);
             if (!evento_desiste)
                 return;
-        fprio_insere(LEF, evento_desiste, EVENTO_DESISTE, instante);
-        printf ("%d: CHEGA HEROI %2d BASE %d (%2d/%2d) DESISTE\n", instante, h->id, b->id, cjto_card(b->presentes), b->lotacao);
+        fprio_insere(LEF, evento_desiste, EVENTO_DESISTE, ev->instante);
+        printf ("%d: CHEGA HEROI %2d BASE %d (%2d/%2d) DESISTE\n", ev->instante, ev->h->id, ev->b->id, cjto_card(ev->b->presentes), ev->b->lotacao);
     }
 }
 

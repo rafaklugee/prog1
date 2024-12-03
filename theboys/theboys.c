@@ -24,24 +24,23 @@
 // programa principal
 int main ()
 {
+  int tipo, tempo;
+  struct evento *evento_atual;
+
   // iniciar as entidades e atributos do mundo
   struct mundo *w = malloc (sizeof(struct mundo));
     if (!w)
       return -1;
   cria_mundo(w);
-  //printf ("\nmundo criado!");
 
   // criar a fila de eventos futuros
   struct fprio_t *LEF = fprio_cria();
     if (!LEF)
       return -1;
-  //printf ("\nLEF criada!");
 
   // criar os eventos iniciais
   eventos_iniciais(w, LEF);
-  //printf ("\neventos iniciais criados!");
 
-  //relógio = 0
   w->relogio = 0;
 
   /*repetir
@@ -57,15 +56,31 @@ int main ()
   */
 
   while (w->relogio <= w->tempo_final) {
-    
-    struct evento *evento_atual = fprio_retira(LEF, NULL, NULL);
-    if (!evento_atual) {
-      printf ("ERRO AO PEGAR O PRIMEIRO EVENTO\n");
-      exit(1);
+
+    evento_atual = fprio_retira (LEF, &tipo, &tempo) ;
+    if (!evento_atual) 
+       return -1;
+
+    if (tipo != evento_atual->tipo)
+    {
+      printf ("erro: tipo inconsistente\n");
+      exit (1) ;
     }
-    
+
+    if (tempo != evento_atual->instante)
+    {
+      printf ("erro: tempo inconsistente\n");
+      exit (1) ;
+    }
 
     w->relogio = evento_atual->instante;
+
+    if (w->relogio >= 9989)
+    {
+      fprio_imprime (LEF) ;
+      printf ("\n") ;
+    }
+    printf ("### vou tratar evento tipo=%d tempo=%d\n", evento_atual->tipo, evento_atual->instante) ;
 
     switch (evento_atual->tipo) {
       case EVENTO_DESISTE:
@@ -87,7 +102,7 @@ int main ()
         sai (evento_atual->instante, evento_atual->h, evento_atual->b, w, LEF);
         break;
       case EVENTO_CHEGA:
-        chega (evento_atual->instante, evento_atual->h, evento_atual->b, LEF);
+        chega (evento_atual, LEF);
         break;
       case EVENTO_MORRE: 
         morre (evento_atual->instante, evento_atual->m, evento_atual->h, evento_atual->b, LEF);
@@ -100,10 +115,9 @@ int main ()
         fim (w);
         break;
     }
-    //fprio_retira(LEF, &evento_atual->tipo, &evento_atual->instante);
-    //fprio_destroi (LEF);
     //sleep(1);
 
+    free (evento_atual) ;
   }
 
   // Destruir o mundo

@@ -16,7 +16,7 @@
 
 // ARRUMAR ORDEM DOS PARÂMETROS (DEIXAR PADRONIZADO)
 
-void chega (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF);
+void chega (struct evento *ev, struct fprio_t *LEF);
 
 void espera (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF, struct lista_t *lst);
 

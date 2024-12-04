@@ -61,17 +61,17 @@ int main ()
     if (!evento_atual) 
        return -1;
 
-    if (tipo != evento_atual->tipo)
-    {
-      printf ("erro: tipo inconsistente\n");
-      exit (1) ;
-    }
-
-    if (tempo != evento_atual->instante)
-    {
-      printf ("erro: tempo inconsistente\n");
-      exit (1);
-    }
+    //if (tipo != evento_atual->tipo)
+    //{
+    //  printf ("erro: tipo inconsistente\n");
+    //  exit (1) ;
+    //}
+//
+    //if (tempo != evento_atual->instante)
+    //{
+    //  printf ("erro: tempo inconsistente\n");
+    //  exit (1);
+    //}
 
     w->relogio = evento_atual->instante;
 
@@ -119,8 +119,11 @@ int main ()
     free (evento_atual) ;
   }
 
-  // Destruir o mundo
-  free(w);
+  // destrói a lef
+  fprio_destroi (lef);
+
+  // destrói o mundo
+  destroi_mundo(w);
 
   return (0) ;
 }

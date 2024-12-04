@@ -10,9 +10,9 @@ void cria_mundo (struct mundo *w) {
     w->tempo_final = 10000; //525600
     w->tam_mundo = 20000;
 
-    w->n_habilidades = 10; // Atualizado para 10
-    w->n_herois = 50; // Atualizado para 50
-    w->n_bases = 10; // Atualizado para 10
+    w->n_habilidades = 10;
+    w->n_herois = 50;
+    w->n_bases = 10;
     w->n_missoes = w->tempo_final / 100;
     w->n_cumpridas = 0;
 
@@ -43,7 +43,7 @@ void cria_mundo (struct mundo *w) {
             cjto_insere(w->herois[i].habilidades, habilidade);
         }
         // Verificando se as habilidades foram inseridas
-        //printf ("HEROI %d HABILIDADES: [", i);
+        //printf ("HEROI %d PAC: %d HABILIDADES: [", i, w->herois[i].paciencia);
         //for (int j = 0; j < w->n_habilidades; j++) {
         //    if (w->herois[i].habilidades->flag[j])
         //        printf (" %d", j);

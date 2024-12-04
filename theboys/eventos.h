@@ -34,6 +34,8 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef);
 
 void fim (struct mundo *w);
 
+void destroi_mundo (struct mundo *w);
+
 void eventos_iniciais (struct mundo *w, struct fprio_t *lef);
 
 #endif

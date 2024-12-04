@@ -1,0 +1,48 @@
+calcula a distância de cada base ao local da missão M
+resultado: dist[b]
+
+encontra BMP = base mais próxima da missão cujos heróis possam cumpri-la 
+
+bmp = -1 
+
+# for (b=0; b< nbases && bmp == -1 ; b++)
+
+para cada base B (percorrendo na ordem das distâncias crescentes)
+
+  habs[B] = união das habs de cada heroi presente em B
+
+  união = {}
+  para cada heroi H
+    se h pertence a base[B].presentes então
+      união = uniao U heroi[H].habs
+    fim se
+  fim para
+  resultado: "união" contém as habilidades na base B
+
+  se união contem missão[M].habs então
+    bmp = B
+    break ;
+  fim se
+
+fim para
+
+resultado: se bmp >= 0, achei uma base apta
+
+# se houver uma BMP:
+se bmp >= 0 então
+    # marca a missão M como cumprida
+    missão[M].cumprida = true 
+
+    # para cada herói H presente na BMP:
+    para cada heroi H
+        se h pertence a base[bmp].presentes então
+           risco = perigo (M) / (paciência (H) + experiência (H) + 1.0)
+           se risco > aleatório (0, 30):
+               cria e insere na LEF o evento MORRE (agora, H)
+           senão:
+               incrementa a experiência de H
+       fim se
+    fim para
+senão
+    cria e insere na LEF o evento MISSAO (T + 24*60, M) para o dia seguinte
+fim se

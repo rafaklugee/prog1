@@ -196,7 +196,7 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
     struct base *base_proxima = NULL;
 
     // extraindo um número aleatório entre [0..30]
-    int random = extrai_aleat(0, 30);
+    int random ;
 
     // cria um conjunto com as habilidades requeridas para a missão
     struct cjto_t *hab_requeridas = cjto_cria(w->n_habilidades);
@@ -285,8 +285,8 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
         ev->m->status = 1; // missão cumprida
         for (i = 0; i < cjto_card(base_proxima->presentes); i++) {
             struct heroi *h = &w->herois[i];
-            risco = ev->m->perigo / ((h->paciencia) + h->experiencia + 1);
-
+            risco = ev->m->perigo / (h->paciencia + h->experiencia + 1.0);
+	    random = extrai_aleat (0, 30) ;
             if (risco > random) {
                 struct evento *evento_morre = cria_evento(ev->instante, EVENTO_MORRE, h, base_proxima, NULL, ev->m);
                 fprio_insere(lef, evento_morre, EVENTO_MORRE, ev->instante);

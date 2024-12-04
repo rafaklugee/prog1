@@ -7,7 +7,8 @@
 void cria_mundo (struct mundo *w) {
     // Inicializando estados do iniciais do mundo
     w->tempo_inicial = 0;
-    w->tempo_final = 10000; //525600
+    //w->tempo_final = 10000;
+    w->tempo_final = 525600 ;
     w->tam_mundo = 20000;
 
     w->n_habilidades = 10;

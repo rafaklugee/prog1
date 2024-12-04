@@ -34,12 +34,12 @@ int main ()
   cria_mundo(w);
 
   // criar a fila de eventos futuros
-  struct fprio_t *LEF = fprio_cria();
-    if (!LEF)
+  struct fprio_t *lef = fprio_cria();
+    if (!lef)
       return -1;
 
   // criar os eventos iniciais
-  eventos_iniciais(w, LEF);
+  eventos_iniciais(w, lef);
 
   w->relogio = 0;
 
@@ -55,9 +55,9 @@ int main ()
   até o fim da simulação
   */
 
-  while (w->relogio <= w->tempo_final) {
+  while (w->relogio != w->tempo_final) {
 
-    evento_atual = fprio_retira (LEF, &tipo, &tempo) ;
+    evento_atual = fprio_retira (lef, &tipo, &tempo) ;
     if (!evento_atual) 
        return -1;
 
@@ -70,45 +70,45 @@ int main ()
     if (tempo != evento_atual->instante)
     {
       printf ("erro: tempo inconsistente\n");
-      exit (1) ;
+      exit (1);
     }
 
     w->relogio = evento_atual->instante;
 
     //if (w->relogio >= 9989)
     //{
-    //  fprio_imprime (LEF) ;
+    //  fprio_imprime (lef) ;
     //  printf ("\n") ;
     //}
     //printf ("### vou tratar evento tipo=%d tempo=%d\n", evento_atual->tipo, evento_atual->instante) ;
 
     switch (evento_atual->tipo) {
       case EVENTO_DESISTE:
-        desiste (evento_atual->instante, evento_atual->h, evento_atual->b, w, LEF);
+        desiste (evento_atual->instante, evento_atual->h, evento_atual->b, w, lef);
         break; 
       case EVENTO_ESPERA:
-        espera (evento_atual->instante, evento_atual->h, evento_atual->b, LEF, evento_atual->b->lst_espera);
+        espera (evento_atual->instante, evento_atual->h, evento_atual->b, lef, evento_atual->b->lst_espera);
         break;
       case EVENTO_AVISA: 
-        avisa (evento_atual->instante, evento_atual->h, evento_atual->b, LEF, evento_atual->b->lst_espera);
+        avisa (evento_atual->instante, evento_atual->h, evento_atual->b, lef, evento_atual->b->lst_espera);
         break;
       case EVENTO_VIAJA:
-        viaja (evento_atual->instante, evento_atual->h, evento_atual->b, evento_atual->b_aux, LEF);
+        viaja (evento_atual->instante, evento_atual->h, evento_atual->b, evento_atual->b_aux, lef);
         break;
       case EVENTO_ENTRA:
-        entra (evento_atual->instante, evento_atual->h, evento_atual->b, LEF);
+        entra (evento_atual->instante, evento_atual->h, evento_atual->b, lef);
         break;
       case EVENTO_SAI:
-        sai (evento_atual->instante, evento_atual->h, evento_atual->b, w, LEF);
+        sai (evento_atual->instante, evento_atual->h, evento_atual->b, w, lef);
         break;
       case EVENTO_CHEGA:
-        chega (evento_atual, LEF);
+        chega (evento_atual, lef);
         break;
       case EVENTO_MORRE: 
-        morre (evento_atual->instante, evento_atual->m, evento_atual->h, evento_atual->b, LEF);
+        morre (evento_atual->instante, evento_atual->m, evento_atual->h, evento_atual->b, lef);
         break;
       case EVENTO_MISSAO:
-        missao (evento_atual->instante, evento_atual->m, w, LEF);
+        missao (evento_atual->instante, evento_atual->m, w, lef);
         break;
       // apresentar resultados
       case EVENTO_FIM:

@@ -16,26 +16,26 @@
 
 // ARRUMAR ORDEM DOS PARÂMETROS (DEIXAR PADRONIZADO)
 
-void chega (struct evento *ev, struct fprio_t *LEF);
+void chega (struct evento *ev, struct fprio_t *lef);
 
-void espera (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF, struct lista_t *lst);
+void espera (int instante, struct heroi *h, struct base *b, struct fprio_t *lef, struct lista_t *lst);
 
-void desiste (int instante, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *LEF);
+void desiste (int instante, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef);
 
-void avisa (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF, struct lista_t *lst);
+void avisa (int instante, struct heroi *h, struct base *b, struct fprio_t *lef, struct lista_t *lst);
 
-void entra (int instante, struct heroi *h, struct base *b, struct fprio_t *LEF);
+void entra (int instante, struct heroi *h, struct base *b, struct fprio_t *lef);
 
-void sai (int instante, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *LEF);
+void sai (int instante, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef);
 
-void viaja (int instante, struct heroi *h, struct base *i, struct base *d, struct fprio_t *LEF);
+void viaja (int instante, struct heroi *h, struct base *i, struct base *d, struct fprio_t *lef);
 
-void morre (int instante, struct missao *m, struct heroi *h, struct base *b, struct fprio_t *LEF);
+void morre (int instante, struct missao *m, struct heroi *h, struct base *b, struct fprio_t *lef);
 
-void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *LEF);
+void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *lef);
 
 void fim (struct mundo *w);
 
-void eventos_iniciais (struct mundo *w, struct fprio_t *LEF);
+void eventos_iniciais (struct mundo *w, struct fprio_t *lef);
 
 #endif

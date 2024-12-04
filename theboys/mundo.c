@@ -29,6 +29,7 @@ void cria_mundo (struct mundo *w) {
         w->herois[i].status = 1;
         w->herois[i].paciencia = extrai_aleat(0, 100);
         w->herois[i].velocidade = extrai_aleat(50, 5000);
+        w->herois[i].base_id = -1;
 
         // Criando um conjunto de habilidades
         tam_cjto_habilidades = extrai_aleat(1, 3);
@@ -42,13 +43,13 @@ void cria_mundo (struct mundo *w) {
             cjto_insere(w->herois[i].habilidades, habilidade);
         }
         // Verificando se as habilidades foram inseridas
+        //printf ("HEROI %d HABILIDADES: [", i);
         //for (int j = 0; j < w->n_habilidades; j++) {
         //    if (w->herois[i].habilidades->flag[j])
         //        printf (" %d", j);
         //    }
-        //printf ("\n");
+        //printf (" ]\n");
     }
-    //exit(1);
 
     // Inicializando as bases
     w->bases = malloc(sizeof(struct base) * w->n_bases);
@@ -95,5 +96,4 @@ void cria_mundo (struct mundo *w) {
         //    }
         //printf ("\n");
     }
-    //exit(1);
 }

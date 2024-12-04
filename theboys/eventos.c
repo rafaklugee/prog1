@@ -188,6 +188,16 @@ void morre (struct evento *ev, struct fprio_t *lef) {
 }
 
 void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
+    int distancia[w->n_bases];
+    // calcula a distância de cada base ao local da missão M
+    for (int i = 0; i < w->n_bases; i++)
+        distancia[i] = sqrt(pow(ev->m->local_x - w->bases[i].local_x, 2) + pow(ev->m->local_y - w->bases[i].local_y, 2));
+
+    
+}
+
+/*
+void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
     if (ev->m->status == 1)
         return;
 
@@ -231,14 +241,6 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
                 }
             }
         }
-
-        // verificando se as habilidades foram inseridas
-        //printf ("BASE %d HABILIDADES: [", base_atual->id);
-        //for (int j = 0; j < w->n_habilidades; j++) {
-        //    if (base_atual->habilidades->flag[j])
-        //        printf (" %d", j);
-        //    }
-        //printf (" ]\n");
 
         // verifica aptidão da base atual
         if (cjto_contem(base_atual->habilidades, hab_requeridas)) {
@@ -320,6 +322,7 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
 
     cjto_destroi(hab_requeridas);
 }
+*/
 
 void fim (struct mundo *w) {
     int n_herois_mortos = 0;

@@ -19,8 +19,6 @@ int min_missao = __INT_MAX__;
 void chega (struct evento *ev, struct fprio_t *lef) {
     cjto_insere(ev->b->presentes, ev->h->id);
 
-    printf ("heroi %d chegou na base %d\n", ev->h->id, ev->b->id);
-
     int tam_fila = lista_tamanho(ev->b->lst_espera);
 
     // se há vagas em B e a fila de espera em B está vazia:
@@ -47,44 +45,44 @@ void chega (struct evento *ev, struct fprio_t *lef) {
     }
 }
 
-void espera (int instante, struct heroi *h, struct base *b, struct fprio_t *lef, struct lista_t *lst) {
-    printf ("%d: ESPERA HEROI %2d BASE %d (%2d)\n", instante, h->id, b->id, lista_tamanho(b->lst_espera));
+void espera (struct evento *ev, struct fprio_t *lef) {
+    printf ("%d: ESPERA HEROI %2d BASE %d (%2d)\n", ev->instante, ev->h->id, ev->b->id, lista_tamanho(ev->b->lst_espera));
     
-    if (lista_tamanho(b->lst_espera) > b->fila_max)
-        b->fila_max = lista_tamanho(b->lst_espera);
+    if (lista_tamanho(ev->b->lst_espera) > ev->b->fila_max)
+        ev->b->fila_max = lista_tamanho(ev->b->lst_espera);
     
     // adiciona H ao fim da fila de espera de B
-    lista_insere(lst, h->id, -1);
+    lista_insere(ev->b->lst_espera, ev->h->id, -1);
 
     //cria e insere na lef o evento AVISA (agora, B)
-    struct evento *evento_avisa = cria_evento(instante, EVENTO_AVISA, h, b, NULL, NULL);
+    struct evento *evento_avisa = cria_evento(ev->instante, EVENTO_AVISA, ev->h, ev->b, NULL, NULL);
         if (!evento_avisa)
             return;
-    fprio_insere (lef, evento_avisa, EVENTO_AVISA, instante);
+    fprio_insere (lef, evento_avisa, EVENTO_AVISA, ev->instante);
 }
 
-void desiste (int instante, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef) {
+void desiste (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
     // escolhe uma base destino D aleatória
     struct base *b_aleat = &w->bases[rand() % w->n_bases];
 
     // cria e insere na lef o evento VIAJA (agora, H, D)
-    struct evento *evento_viaja = cria_evento(instante, EVENTO_VIAJA, h, b, b_aleat, NULL);
+    struct evento *evento_viaja = cria_evento(ev->instante, EVENTO_VIAJA, ev->h, ev->b, b_aleat, NULL);
         if (!evento_viaja)
             return;
-    fprio_insere (lef, evento_viaja, EVENTO_VIAJA, instante);
-    printf ("%d: DESISTE HEROI %2d BASE %d\n", instante, h->id, b->id);
+    fprio_insere (lef, evento_viaja, EVENTO_VIAJA, ev->instante);
+    printf ("%d: DESISTE HEROI %2d BASE %d\n", ev->instante, ev->h->id, ev->b->id);
 }
 
-void avisa (int instante, struct heroi *h, struct base *b, struct fprio_t *lef, struct lista_t *lst) {
-    if (lista_tamanho(lst) > 0) {
+void avisa (struct evento *ev, struct fprio_t *lef) {
+    if (lista_tamanho(ev->b->lst_espera) > 0) {
         // enquanto houver vaga em B e houver heróis esperando na fila:
-        while (b->lotacao != cjto_card(b->presentes) && b->espera) {
-            lista_retira (lst, &h->id, 0);
-            b->espera = 0;
+        while (ev->b->lotacao != cjto_card(ev->b->presentes) && ev->b->espera) {
+            lista_retira (ev->b->lst_espera, &ev->h->id, 0);
+            ev->b->espera = 0;
             
-            printf ("%d: AVISA PORTEIRO BASE %d (%2d/%2d) FILA [", instante, b->id, cjto_card(b->presentes), b->lotacao);
-            struct item_t *atual = lst->prim;
-            for (int i = 0; i < lst->tamanho; i++) {
+            printf ("%d: AVISA PORTEIRO BASE %d (%2d/%2d) FILA [", ev->instante, ev->b->id, cjto_card(ev->b->presentes), ev->b->lotacao);
+            struct item_t *atual = ev->b->lst_espera->prim;
+            for (int i = 0; i < ev->b->lst_espera->tamanho; i++) {
                 printf (" %2d", atual->valor);
                 atual = atual->prox;
             }
@@ -98,7 +96,7 @@ void avisa (int instante, struct heroi *h, struct base *b, struct fprio_t *lef, 
             //}
             //printf (" ]\n");
 
-            cjto_insere(b->presentes, h->id);
+            cjto_insere(ev->b->presentes, ev->h->id);
 
             //printf ("HEROIS PRESENTES NA BASE depois de inserir: [");
             //for (int i = 0; i < w->n_herois; i++) {
@@ -108,30 +106,31 @@ void avisa (int instante, struct heroi *h, struct base *b, struct fprio_t *lef, 
             //printf (" ]\n");
 
             // cria e insere na lef o evento ENTRA (agora, H', B)
-            struct evento *evento_entra = cria_evento(instante, EVENTO_ENTRA, h, b, NULL, NULL);
-            fprio_insere (lef, evento_entra, EVENTO_ENTRA, instante);
-            printf ("%d: AVISA PORTEIRO BASE %d ADMITE %2d\n", instante, b->id, h->id);
+            struct evento *evento_entra = cria_evento(ev->instante, EVENTO_ENTRA, ev->h, ev->b, NULL, NULL);
+            fprio_insere (lef, evento_entra, EVENTO_ENTRA, ev->instante);
+            printf ("%d: AVISA PORTEIRO BASE %d ADMITE %2d\n", ev->instante, ev->b->id, ev->h->id);
         }
     }
     else
         return;
 }
 
-void entra (int instante, struct heroi *h, struct base *b, struct fprio_t *lef) {
+void entra (struct evento *ev, struct fprio_t *lef) {
     // Extraindo um número aleatório entre [1..20]
     int random = extrai_aleat(1, 20);
 
     // calcula tpb = tempo de permanência na base
-    int tpb = 15 + h->paciencia * random;
+    int tpb = 15 + ev->h->paciencia * random;
 
     // cria e insere na lef o evento SAI (agora + tpb, H, B)
-    struct evento *evento_sai = cria_evento(instante + tpb, EVENTO_SAI, h, b, NULL, NULL);
-    fprio_insere (lef, evento_sai, EVENTO_SAI, instante + tpb);
+    struct evento *evento_sai = cria_evento(ev->instante + tpb, EVENTO_SAI, ev->h, ev->b, NULL, NULL);
+    fprio_insere (lef, evento_sai, EVENTO_SAI, ev->instante + tpb);
 
-    printf ("%d: ENTRA HEROI %2d BASE %d (%2d/%2d) SAI %d\n", instante, h->id, b->id, cjto_card(b->presentes), b->lotacao, instante + tpb);
+    printf ("%d: ENTRA HEROI %2d BASE %d (%2d/%2d) SAI %d\n", 
+                ev->instante, ev->h->id, ev->b->id, cjto_card(ev->b->presentes), ev->b->lotacao, ev->instante + tpb);
 }
 
-void sai (int instante, struct heroi *h, struct base *b, struct mundo *w, struct fprio_t *lef) {  
+void sai (struct evento *ev, struct mundo *w, struct fprio_t *lef) {  
     // retira H do conjunto de heróis presentes em B
     //printf ("HEROIS PRESENTES NA BASE antes de retirar: [");
     //        for (int i = 0; i < w->n_herois; i++) {
@@ -140,7 +139,7 @@ void sai (int instante, struct heroi *h, struct base *b, struct mundo *w, struct
     //        }
     //        printf (" ]\n");
 
-    cjto_retira(b->presentes, h->id);
+    cjto_retira(ev->b->presentes, ev->h->id);
 
     //printf ("HEROIS PRESENTES NA BASE depois de retirar: [");
     //        for (int i = 0; i < w->n_herois; i++) {
@@ -153,41 +152,43 @@ void sai (int instante, struct heroi *h, struct base *b, struct mundo *w, struct
     struct base *b_aleat = &w->bases[rand() % w->n_bases];
 
     // cria e insere na lef o evento VIAJA (agora, H, D)
-    struct evento *evento_viaja = cria_evento(instante, EVENTO_VIAJA, h, b, b_aleat, NULL);
-    fprio_insere (lef, evento_viaja, EVENTO_VIAJA, instante);
+    struct evento *evento_viaja = cria_evento(ev->instante, EVENTO_VIAJA, ev->h, ev->b, b_aleat, NULL);
+    fprio_insere (lef, evento_viaja, EVENTO_VIAJA, ev->instante);
 
     // cria e insere na lef o evento AVISA (agora, B)
-    struct evento *evento_avisa = cria_evento(instante, EVENTO_AVISA, h, b, NULL, NULL);
-    fprio_insere (lef, evento_avisa, EVENTO_AVISA, instante);
-    printf ("%d: SAI HEROI %2d BASE %d (%2d/%2d)\n", instante, h->id, b->id, cjto_card(b->presentes), b->lotacao);
+    struct evento *evento_avisa = cria_evento(ev->instante, EVENTO_AVISA, ev->h, ev->b, NULL, NULL);
+    fprio_insere (lef, evento_avisa, EVENTO_AVISA, ev->instante);
+    printf ("%d: SAI HEROI %2d BASE %d (%2d/%2d)\n", 
+                ev->instante, ev->h->id, ev->b->id, cjto_card(ev->b->presentes), ev->b->lotacao);
 }
 
-void viaja (int instante, struct heroi *h, struct base *i, struct base *d, struct fprio_t *lef) {
+void viaja (struct evento *ev, struct fprio_t *lef) {
     // calcula duração da viagem
-    int distancia = sqrt (pow(d->local_x - i->local_x, 2) + pow(d->local_y - i->local_y, 2));
-    int duracao = distancia / h->velocidade;
+    int distancia = sqrt (pow(ev->b_aux->local_x - ev->b->local_x, 2) + pow(ev->b_aux->local_y - ev->b->local_y, 2));
+    int duracao = distancia / ev->h->velocidade;
 
     // cria e insere na lef o evento CHEGA (agora + duração, H, D)
-    struct evento *evento_chega = cria_evento(instante + duracao, EVENTO_CHEGA, h, i, d, NULL);
-    fprio_insere (lef, evento_chega, EVENTO_CHEGA, instante + duracao);
-    printf ("%d: VIAJA HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", instante, h->id, i->id, d->id, distancia, h->velocidade, instante + duracao);
+    struct evento *evento_chega = cria_evento(ev->instante + duracao, EVENTO_CHEGA, ev->h, ev->b, ev->b_aux, NULL);
+    fprio_insere (lef, evento_chega, EVENTO_CHEGA, ev->instante + duracao);
+    printf ("%d: VIAJA HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", 
+                ev->instante, ev->h->id, ev->b->id, ev->b_aux->id, distancia, ev->h->velocidade, ev->instante + duracao);
 }
 
-void morre (int instante, struct missao *m, struct heroi *h, struct base *b, struct fprio_t *lef) {
+void morre (struct evento *ev, struct fprio_t *lef) {
     // retira H do conjunto de heróis presentes em B
-    cjto_retira(b->presentes, h->id);
+    cjto_retira(ev->b->presentes, ev->h->id);
 
     // muda o status de H para morto 
-    h->status = 0;
+    ev->h->status = 0;
 
     // cria e insere na lef o evento AVISA (agora, B)
-    struct evento *evento_avisa = cria_evento(instante, EVENTO_AVISA, h, b, NULL, m);
-    fprio_insere (lef, evento_avisa, EVENTO_AVISA, instante);
-    printf ("%d: MORRE HEROI %2d MISSAO %d\n", instante, h->id, m->id);
+    struct evento *evento_avisa = cria_evento(ev->instante, EVENTO_AVISA, ev->h, ev->b, NULL, ev->m);
+    fprio_insere (lef, evento_avisa, EVENTO_AVISA, ev->instante);
+    printf ("%d: MORRE HEROI %2d MISSAO %d\n", ev->instante, ev->h->id, ev->m->id);
 }
 
-void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *lef) {
-    if (m->status == 1)
+void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
+    if (ev->m->status == 1)
         return;
 
     int i, distancia, risco;
@@ -201,12 +202,12 @@ void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *le
     struct cjto_t *hab_requeridas = cjto_cria(w->n_habilidades);
 
     // valores para as estatísticas finais
-    m->n_tentativas++;
-    soma_missoes += m->n_tentativas;
+    ev->m->n_tentativas++;
+    soma_missoes += ev->m->n_tentativas;
 
-    printf ("%d: MISSAO %d TENT %d HAB REQ: [", instante, m->id, m->n_tentativas);
+    printf ("%d: MISSAO %d TENT %d HAB REQ: [", ev->instante, ev->m->id, ev->m->n_tentativas);
     for (int i = 0; i < w->n_habilidades; i++) {
-        if (m->habilidades->flag[i]) {
+        if (ev->m->habilidades->flag[i]) {
             cjto_insere(hab_requeridas, i); // insere a habilidade no conjunto
             printf (" %d", i);
         }
@@ -234,16 +235,16 @@ void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *le
 
         // verifica aptidão da base atual
         if (cjto_contem(hab_base, hab_requeridas)) {
-            distancia = sqrt(pow(m->local_x - base_atual->local_x, 2) + pow(m->local_y - base_atual->local_y, 2));
+            distancia = sqrt(pow(ev->m->local_x - base_atual->local_x, 2) + pow(ev->m->local_y - base_atual->local_y, 2));
 
-            printf ("%d: MISSAO %d BASE %d DIST %d HEROIS [", instante, m->id, base_atual->id, distancia);
+            printf ("%d: MISSAO %d BASE %d DIST %d HEROIS [", ev->instante, ev->m->id, base_atual->id, distancia);
             for (int i = 0; i < cjto_card(base_atual->presentes); i++) {
                 printf (" %d", w->herois[i].id);
             }
             printf (" ]\n");
 
             for (int i = 0; i < cjto_card(base_atual->presentes); i++) {
-                printf ("%d: MISSAO %d HAB HEROI %d [", instante, m->id, w->herois[i].id);
+                printf ("%d: MISSAO %d HAB HEROI %d [", ev->instante, ev->m->id, w->herois[i].id);
                 for (int j = 0; j < w->n_habilidades; j++) {
                     if (w->herois[i].habilidades->flag[j])
                         printf (" %d", j);
@@ -251,7 +252,7 @@ void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *le
                 printf (" ]\n");
             }
 
-                printf ("%d: MISSAO %d UNIAO HAB BASE %d [", instante, m->id, base_atual->id);
+                printf ("%d: MISSAO %d UNIAO HAB BASE %d [", ev->instante, ev->m->id, base_atual->id);
                 for (int j = 0; j < w->n_habilidades; j++) {
                     if (hab_base->flag[j])
                         printf (" %d", j);
@@ -268,16 +269,16 @@ void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *le
 
     // se houver uma BMP
     if (base_proxima) {
-        m->status = 1; // missão cumprida
+        ev->m->status = 1; // missão cumprida
         for (i = 0; i < cjto_card(base_proxima->presentes); i++) {
             struct heroi *h = &w->herois[i];
-            risco = m->perigo / ((h->paciencia) + h->experiencia + 1);
+            risco = ev->m->perigo / ((h->paciencia) + h->experiencia + 1);
 
             //printf("RISCO = PERIGO: %d/ (PAC_HERÓI %d + EXP_HEROI %d + 1) == %d (RANDOM = %d)\n", m->perigo, h->paciencia, h->experiencia, risco, random);
 
             if (risco > random) {
-                struct evento *evento_morre = cria_evento(instante, EVENTO_MORRE, h, base_proxima, NULL, m);
-                fprio_insere(lef, evento_morre, EVENTO_MORRE, instante);
+                struct evento *evento_morre = cria_evento(ev->instante, EVENTO_MORRE, h, base_proxima, NULL, ev->m);
+                fprio_insere(lef, evento_morre, EVENTO_MORRE, ev->instante);
             }
             else {
                 h->experiencia++;
@@ -287,23 +288,23 @@ void missao (int instante, struct missao *m, struct mundo *w, struct fprio_t *le
         // valores para as estatísticas finais
         w->n_cumpridas++;
         base_proxima->n_missoes_base++;
-        if (m->n_tentativas < min_missao)
-            min_missao = m->n_tentativas;
-        if (m->n_tentativas > max_missao)
-            max_missao = m->n_tentativas;
+        if (ev->m->n_tentativas < min_missao)
+            min_missao = ev->m->n_tentativas;
+        if (ev->m->n_tentativas > max_missao)
+            max_missao = ev->m->n_tentativas;
 
-        printf ("%d: MISSAO %d CUMPRIDA BASE %d HABS: [", instante, m->id, base_proxima->id);
+        printf ("%d: MISSAO %d CUMPRIDA BASE %d HABS: [", ev->instante, ev->m->id, base_proxima->id);
             for (int i = 0; i < w->n_habilidades; i++) {
-                if (m->habilidades->flag[i])
+                if (ev->m->habilidades->flag[i])
                 printf (" %d", i);
             }
         printf (" ]\n");
     }
     // senão
     else {
-        struct evento *evento_missao = cria_evento(instante + (24*60), EVENTO_MISSAO, NULL, NULL, NULL, m);
-        fprio_insere(lef, evento_missao, EVENTO_MISSAO, instante + (24*60));
-        printf ("%d: MISSAO %d IMPOSSIVEL\n", instante, m->id);
+        struct evento *evento_missao = cria_evento(ev->instante + (24*60), EVENTO_MISSAO, NULL, NULL, NULL, ev->m);
+        fprio_insere(lef, evento_missao, EVENTO_MISSAO, ev->instante + (24*60));
+        printf ("%d: MISSAO %d IMPOSSIVEL\n", ev->instante, ev->m->id);
     }
 
     cjto_destroi(hab_requeridas);

@@ -84,31 +84,31 @@ int main ()
 
     switch (evento_atual->tipo) {
       case EVENTO_DESISTE:
-        desiste (evento_atual->instante, evento_atual->h, evento_atual->b, w, lef);
+        desiste (evento_atual, w, lef);
         break; 
       case EVENTO_ESPERA:
-        espera (evento_atual->instante, evento_atual->h, evento_atual->b, lef, evento_atual->b->lst_espera);
+        espera (evento_atual, lef);
         break;
       case EVENTO_AVISA: 
-        avisa (evento_atual->instante, evento_atual->h, evento_atual->b, lef, evento_atual->b->lst_espera);
+        avisa (evento_atual, lef);
         break;
       case EVENTO_VIAJA:
-        viaja (evento_atual->instante, evento_atual->h, evento_atual->b, evento_atual->b_aux, lef);
+        viaja (evento_atual, lef);
         break;
       case EVENTO_ENTRA:
-        entra (evento_atual->instante, evento_atual->h, evento_atual->b, lef);
+        entra (evento_atual, lef);
         break;
       case EVENTO_SAI:
-        sai (evento_atual->instante, evento_atual->h, evento_atual->b, w, lef);
+        sai (evento_atual, w, lef);
         break;
       case EVENTO_CHEGA:
         chega (evento_atual, lef);
         break;
       case EVENTO_MORRE: 
-        morre (evento_atual->instante, evento_atual->m, evento_atual->h, evento_atual->b, lef);
+        morre (evento_atual, lef);
         break;
       case EVENTO_MISSAO:
-        missao (evento_atual->instante, evento_atual->m, w, lef);
+        missao (evento_atual, w, lef);
         break;
       // apresentar resultados
       case EVENTO_FIM:
@@ -116,7 +116,6 @@ int main ()
         break;
     }
     //sleep(1);
-
     free (evento_atual) ;
   }
 

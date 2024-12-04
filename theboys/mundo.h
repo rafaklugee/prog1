@@ -24,6 +24,7 @@ struct base {
     int fila_max;
     int espera; // 1 = espera; 0 = não espera
     struct cjto_t *presentes;
+    struct cjto_t *habilidades;
     struct lista_t *lst_espera;
 };
 

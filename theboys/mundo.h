@@ -48,6 +48,7 @@ struct mundo {
     int tempo_inicial;
     int tempo_final;
     int tam_mundo;
+    int eventos_tratados;
 
     int n_cumpridas;
     int relogio;

@@ -55,6 +55,8 @@ int main ()
   até o fim da simulação
   */
 
+  w->eventos_tratados = 0;
+
   while (w->relogio != w->tempo_final) {
 
     evento_atual = fprio_retira (lef, &tipo, &tempo) ;
@@ -116,6 +118,7 @@ int main ()
         break;
     }
     //sleep(1);
+    w->eventos_tratados++;
     free (evento_atual) ;
   }
 

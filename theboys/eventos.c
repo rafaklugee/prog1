@@ -11,13 +11,11 @@
 struct evento *cria_evento (int instante, int tipo, struct heroi *h, struct base *b, struct base *b_aux, struct missao *m);
 
 // variáveis globais para colocar nas estatísticas finais
-int eventos_tratados = 0;
 int soma_missoes = 0;
 int max_missao = 0;
 int min_missao = __INT_MAX__;
 
 void chega (struct evento *ev, struct fprio_t *lef) {
-    eventos_tratados++;
     
     ev->h->base_id = ev->b->id;
 
@@ -49,7 +47,6 @@ void chega (struct evento *ev, struct fprio_t *lef) {
 }
 
 void espera (struct evento *ev, struct fprio_t *lef) {
-    eventos_tratados++;
     printf ("%d: ESPERA HEROI %2d BASE %d (%2d)\n", ev->instante, ev->h->id, ev->b->id, lista_tamanho(ev->b->lst_espera));
     
     if (lista_tamanho(ev->b->lst_espera) > ev->b->fila_max)
@@ -66,7 +63,6 @@ void espera (struct evento *ev, struct fprio_t *lef) {
 }
 
 void desiste (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
-    eventos_tratados++;
     // escolhe uma base destino D aleatória
     struct base *b_aleat = &w->bases[rand() % w->n_bases];
 
@@ -79,17 +75,12 @@ void desiste (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
 }
 
 void avisa (struct evento *ev, struct fprio_t *lef) {
-    eventos_tratados++;
     // enquanto houver vaga em B e houver heróis esperando na fila:
     while (ev->b->lotacao != cjto_card(ev->b->presentes) && lista_tamanho(ev->b->lst_espera) > 0) {
         lista_retira (ev->b->lst_espera, &ev->h->id, 0);
-        
-        printf ("%d: AVISA PORTEIRO BASE %d (%2d/%2d) FILA [", ev->instante, ev->b->id, cjto_card(ev->b->presentes), ev->b->lotacao);
-        struct item_t *atual = ev->b->lst_espera->prim;
-        for (int i = 0; i < ev->b->lst_espera->tamanho; i++) {
-            printf (" %2d", atual->valor);
-            atual = atual->prox;
-        }
+         
+        printf ("%d: AVISA PORTEIRO BASE %d (%2d/%2d) FILA [ ", ev->instante, ev->b->id, cjto_card(ev->b->presentes), ev->b->lotacao);
+        lista_imprime (ev->b->lst_espera);
         printf (" ]\n");
 
         // adiciona H' ao conjunto de heróis presentes em B
@@ -110,6 +101,8 @@ void avisa (struct evento *ev, struct fprio_t *lef) {
         //printf (" ]\n");
         // cria e insere na lef o evento ENTRA (agora, H', B)
         
+        printf ("\nINSTANTE AQUI (1) = %d\n", ev->instante);
+
         struct evento *evento_entra = cria_evento(ev->instante, EVENTO_ENTRA, ev->h, ev->b, NULL, NULL);
         fprio_insere (lef, evento_entra, EVENTO_ENTRA, ev->instante);
         printf ("%d: AVISA PORTEIRO BASE %d ADMITE HEROI %2d\n", ev->instante, ev->b->id, ev->h->id);
@@ -117,7 +110,6 @@ void avisa (struct evento *ev, struct fprio_t *lef) {
 }
 
 void entra (struct evento *ev, struct fprio_t *lef) {
-    eventos_tratados++;
 
     // calcula tpb = tempo de permanência na base
     int tpb = 15 + ev->h->paciencia * extrai_aleat(1, 20);
@@ -126,12 +118,13 @@ void entra (struct evento *ev, struct fprio_t *lef) {
     struct evento *evento_sai = cria_evento(ev->instante + tpb, EVENTO_SAI, ev->h, ev->b, NULL, NULL);
     fprio_insere (lef, evento_sai, EVENTO_SAI, ev->instante + tpb);
 
+    //printf ("agendei pro heroi %d sair da base %d no instante %d...", ev->h->id, ev->b->id, ev->instante + tpb);
+
     printf ("%d: ENTRA HEROI %2d BASE %d (%2d/%2d) SAI %d\n", 
                 ev->instante, ev->h->id, ev->b->id, cjto_card(ev->b->presentes), ev->b->lotacao, ev->instante + tpb);
 }
 
 void sai (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
-    eventos_tratados++;
     // retira H do conjunto de heróis presentes em B
     //printf ("HEROIS PRESENTES NA BASE antes de retirar: [");
     //        for (int i = 0; i < w->n_herois; i++) {
@@ -142,7 +135,7 @@ void sai (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
     //        }
     //        printf (" ]\n");
     //
-    
+
     cjto_retira(ev->b->presentes, ev->h->id);
 
     //printf ("HEROIS PRESENTES NA BASE depois de retirar: [");
@@ -169,7 +162,6 @@ void sai (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
 }
 
 void viaja (struct evento *ev, struct fprio_t *lef) {
-    eventos_tratados++;
     // calcula duração da viagem
     int distancia = sqrt (pow(ev->b_aux->local_x - ev->b->local_x, 2) + pow(ev->b_aux->local_y - ev->b->local_y, 2));
     int duracao = distancia / ev->h->velocidade;
@@ -182,7 +174,6 @@ void viaja (struct evento *ev, struct fprio_t *lef) {
 }
 
 void morre (struct evento *ev, struct fprio_t *lef) {
-    eventos_tratados++;
     // retira H do conjunto de heróis presentes em B
     cjto_retira(ev->b->presentes, ev->h->id);
 
@@ -196,7 +187,6 @@ void morre (struct evento *ev, struct fprio_t *lef) {
 }
 
 void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
-    eventos_tratados++;
     int distancia[w->n_bases];
     struct base *bmp = NULL;
 
@@ -311,7 +301,6 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
 }
 
 void fim (struct mundo *w) {
-    eventos_tratados++;
     int n_herois_mortos = 0;
     float media_missao = soma_missoes / w->n_missoes;
     float missoes_t_c = (w->n_cumpridas * 100) / w->n_missoes;
@@ -359,7 +348,7 @@ void fim (struct mundo *w) {
 
     float taxa_mortalidade = (n_herois_mortos * 100) / w->n_herois;
     // estatísticas gerais
-        printf ("EVENTOS TRATADOS: %d\n", eventos_tratados);
+        printf ("EVENTOS TRATADOS: %d\n", w->eventos_tratados);
         printf ("MISSOES CUMPRIDAS: %d/%d (%.1f%%)\n", w->n_cumpridas, w->n_missoes, missoes_t_c);
         printf ("TENTATIVAS/MISSAO: MIN %d, MAX %d, MEDIA %.1f\n", min_missao, max_missao, media_missao);
         printf ("TAXA MORTALIDADE: %.1f%%\n", taxa_mortalidade);
@@ -396,6 +385,9 @@ void eventos_iniciais (struct mundo *w, struct fprio_t *lef) {
     for (int i = 0; i < w->n_herois; i++) {
         w->herois[i].base_id = extrai_aleat (0, w->n_bases - 1);
         instante = extrai_aleat (0, 4320);
+
+        printf ("\no heroi %d vai chegar na base %d no instante %d\n", i, w->herois[i].base_id, instante);
+
         struct evento *evento_chega = cria_evento(instante, EVENTO_CHEGA, &w->herois[i], &w->bases[w->herois[i].base_id], NULL, NULL);
         if (!evento_chega)
             return;

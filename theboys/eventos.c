@@ -135,17 +135,22 @@ void sai (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
     // retira H do conjunto de heróis presentes em B
     //printf ("HEROIS PRESENTES NA BASE antes de retirar: [");
     //        for (int i = 0; i < w->n_herois; i++) {
-    //            if (b->presentes->flag[i])
+    //            if (ev->b->presentes->flag[i]) {
+    //                printf (" HEROI");
     //                printf (" %d", i);
+    //            }
     //        }
     //        printf (" ]\n");
-
+    //
+    
     cjto_retira(ev->b->presentes, ev->h->id);
 
     //printf ("HEROIS PRESENTES NA BASE depois de retirar: [");
     //        for (int i = 0; i < w->n_herois; i++) {
-    //            if (b->presentes->flag[i])
+    //            if (ev->b->presentes->flag[i]) {
+    //                printf (" HEROI");
     //                printf (" %d", i);
+    //            }
     //        }
     //        printf (" ]\n");
 

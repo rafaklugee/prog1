@@ -95,15 +95,15 @@ void cria_mundo (struct mundo *w) {
             int habilidade = extrai_aleat(0, w->n_habilidades - 1);
             cjto_insere(w->missoes[i].habilidades, habilidade);
         }
-        printf ("\nMISSAO %d HABS: [", i);
-        cjto_imprime(w->missoes[i].habilidades);
-        printf (" ]\n");
+        //printf ("\nMISSAO %d HABS: [", i);
+        //cjto_imprime(w->missoes[i].habilidades);
+        //printf (" ]\n");
 
         // Verificando se as habilidades foram inseridas
-        for (int j = 0; j < w->n_missoes; j++) {
-            if (w->missoes[i].habilidades->flag[j])
-                printf (" %d", j);
-            }
-        printf ("\n");
+        //for (int j = 0; j < w->n_missoes; j++) {
+        //    if (w->missoes[i].habilidades->flag[j])
+        //        printf (" %d", j);
+        //    }
+        //printf ("\n");
     }
 }

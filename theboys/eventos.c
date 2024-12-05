@@ -112,17 +112,15 @@ void avisa (struct evento *ev, struct fprio_t *lef) {
         
         struct evento *evento_entra = cria_evento(ev->instante, EVENTO_ENTRA, ev->h, ev->b, NULL, NULL);
         fprio_insere (lef, evento_entra, EVENTO_ENTRA, ev->instante);
-        printf ("%d: AVISA PORTEIRO BASE %d ADMITE %2d\n", ev->instante, ev->b->id, ev->h->id);
+        printf ("%d: AVISA PORTEIRO BASE %d ADMITE HEROI %2d\n", ev->instante, ev->b->id, ev->h->id);
     }
 }
 
 void entra (struct evento *ev, struct fprio_t *lef) {
     eventos_tratados++;
-    // Extraindo um número aleatório entre [1..20]
-    int random = extrai_aleat(1, 20);
 
     // calcula tpb = tempo de permanência na base
-    int tpb = 15 + ev->h->paciencia * random;
+    int tpb = 15 + ev->h->paciencia * extrai_aleat(1, 20);
 
     // cria e insere na lef o evento SAI (agora + tpb, H, B)
     struct evento *evento_sai = cria_evento(ev->instante + tpb, EVENTO_SAI, ev->h, ev->b, NULL, NULL);

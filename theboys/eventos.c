@@ -20,15 +20,16 @@ void chega (struct evento *ev, struct fprio_t *lef) {
     eventos_tratados++;
     cjto_insere(ev->b->presentes, ev->h->id);
 
+    int espera = 0;
     int tam_fila = lista_tamanho(ev->b->lst_espera);
 
     // se há vagas em B e a fila de espera em B está vazia:
     if (ev->b->lotacao != cjto_card(ev->b->presentes) && tam_fila == 0)
-        ev->b->espera = 1;
+        espera = 1;
     else
-        ev->b->espera = (ev->h->paciencia) > (10 * tam_fila);
+        espera = (ev->h->paciencia) > (10 * tam_fila);
 
-    if (ev->b->espera) {
+    if (espera) {
         //cria e insere na lef o evento espera;
         struct evento *evento_espera = cria_evento(ev->instante, EVENTO_ESPERA, ev->h, ev->b, NULL, NULL);
             if (!evento_espera)
@@ -78,11 +79,11 @@ void desiste (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
 
 void avisa (struct evento *ev, struct fprio_t *lef) {
     eventos_tratados++;
+    int vagas = ev->b->lotacao - cjto_card(ev->b->presentes);
     if (lista_tamanho(ev->b->lst_espera) > 0) {
         // enquanto houver vaga em B e houver heróis esperando na fila:
-        while (ev->b->lotacao != cjto_card(ev->b->presentes) && ev->b->espera) {
+        while (vagas && lista_tamanho(ev->b->lst_espera) != 0) {
             lista_retira (ev->b->lst_espera, &ev->h->id, 0);
-            ev->b->espera = 0;
             
             printf ("%d: AVISA PORTEIRO BASE %d (%2d/%2d) FILA [", ev->instante, ev->b->id, cjto_card(ev->b->presentes), ev->b->lotacao);
             struct item_t *atual = ev->b->lst_espera->prim;
@@ -174,11 +175,12 @@ void viaja (struct evento *ev, struct fprio_t *lef) {
     int distancia = sqrt (pow(ev->b_aux->local_x - ev->b->local_x, 2) + pow(ev->b_aux->local_y - ev->b->local_y, 2));
     int duracao = distancia / ev->h->velocidade;
 
-    // cria e insere na lef o evento CHEGA (agora + duração, H, D)
-    struct evento *evento_chega = cria_evento(ev->instante + duracao, EVENTO_CHEGA, ev->h, ev->b, ev->b_aux, NULL);
-    fprio_insere (lef, evento_chega, EVENTO_CHEGA, ev->instante + duracao);
     printf ("%d: VIAJA HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", 
                 ev->instante, ev->h->id, ev->b->id, ev->b_aux->id, distancia, ev->h->velocidade, ev->instante + duracao);
+    
+    // cria e insere na lef o evento CHEGA (agora + duração, H, D)
+    struct evento *evento_chega = cria_evento(ev->instante + duracao, EVENTO_CHEGA, ev->h, ev->b_aux, NULL, NULL);
+    fprio_insere (lef, evento_chega, EVENTO_CHEGA, ev->instante + duracao);
 }
 
 void morre (struct evento *ev, struct fprio_t *lef) {

@@ -12,7 +12,7 @@ struct evento *cria_evento (int instante, int tipo, struct heroi *h, struct base
                             struct base *b_aux, struct missao *m);
 
 // Protótipo de uma função de ordenação
-void selection_sort (int dist[], int indice[], int tam);
+void selection_sort (struct base b[], int tam);
 
 // Variáveis globais para colocar nas estatísticas finais
 int soma_missoes = 0;
@@ -176,8 +176,8 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
     if (ev->m->status == 1)
         return;
 
-    int distancia[w->n_bases];
-    int indice[w->n_bases];
+    int distancia;
+    struct base *v_distancia = malloc(sizeof(struct base) * w->n_bases);
     struct base *bmp = NULL;
 
     // Valores para as estatísticas finais
@@ -189,17 +189,22 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
     
     // Calcula a distância de cada base ao local da missão M
     for (int i = 0; i < w->n_bases; i++) {
-        distancia[i] = sqrt(pow(ev->m->local_x - w->bases[i].local_x, 2) + 
-                            pow(ev->m->local_y - w->bases[i].local_y, 2));
-        indice[i] = i;
+        distancia = sqrt(pow(ev->m->local_x - w->bases[i].local_x, 2) + 
+                         pow(ev->m->local_y - w->bases[i].local_y, 2));
+        w->bases[i].tmp_dist = distancia;
     }
 
-    selection_sort (distancia, indice, w->n_bases);
+    // Ordena as distâncias das bases à missão
+    for (int i = 0; i < w->n_bases; i++) 
+        v_distancia[i] = w->bases[i];
 
+    for (int i = 0; i < w->n_bases; i++)
+        selection_sort (v_distancia, w->n_bases);
+
+    // Atualiza habilidades da base com as dos heróis presentes
     for (int i = 0; i < w->n_bases; i++) {
-        struct cjto_t *habilidades = cjto_cria(w->n_habilidades);
-    
-        // Atualiza habilidades da base com as dos heróis presentes
+        struct cjto_t *habilidades = cjto_cria(w->n_habilidades); 
+        
         for (int j = 0; j < w->n_herois; j++) {
             if (cjto_pertence (w->bases[i].presentes, j) && w->herois[j].status != 0) {  
                 struct cjto_t *uniao = cjto_uniao(habilidades, w->herois[j].habilidades);
@@ -212,9 +217,9 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
         }
 
         // Verifica a os heróis que certa base tem, tal como sua distância da missão
-        printf ("%d: MISSAO %d BASE %d DIST %d HEROIS [", ev->instante, ev->m->id, i, distancia[i]);
+        printf ("%d: MISSAO %d BASE %d DIST %d HEROIS [", ev->instante, ev->m->id, i, w->bases[i].tmp_dist);
         for (int j = 0; j < w->n_herois; j++) {
-            if (cjto_pertence(w->bases[i].presentes, j))
+            if (cjto_pertence(w->bases[i].presentes, j) && w->herois[j].status != 0)
             printf (" %d", j);
         }
         printf (" ]\n");
@@ -403,24 +408,19 @@ int extrai_aleat (int ini, int cap) {
     return valor;
 }
 
-void selection_sort (int dist[], int indice[], int tam) {
-    int i, j, idxmenor, temp_idx, temp_dist;
-
+void selection_sort (struct base b[], int tam) {
+    int i, j, idxmenor, temp;
     for (i = 0; i < tam - 1; i++) {
         idxmenor = i;
         for (j = i + 1; j < tam; j++) {
-            if (dist[idxmenor] > dist[j])
+            if (b[i].tmp_dist > b[j].tmp_dist)
                 idxmenor = j;
         }
         if (i != idxmenor) {
             // Ordenando distâncias
-            temp_dist = dist[i];
-            dist[i] = dist[idxmenor];
-            dist[idxmenor] = temp_dist;
-            // Ordenando índices
-            temp_idx = indice[i];
-            indice[i] = indice[idxmenor];
-            indice[idxmenor] = temp_idx;
+            temp = b[i].tmp_dist;
+            b[i].tmp_dist = b[idxmenor].tmp_dist;
+            b[idxmenor].tmp_dist = temp;
         }
     }
 }

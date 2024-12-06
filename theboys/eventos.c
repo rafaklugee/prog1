@@ -8,7 +8,8 @@
 #include "conjunto.h"
 
 // protótipo de uma função auxiliar para criar um evento
-struct evento *cria_evento (int instante, int tipo, struct heroi *h, struct base *b, struct base *b_aux, struct missao *m);
+struct evento *cria_evento (int instante, int tipo, struct heroi *h, struct base *b, 
+                            struct base *b_aux, struct missao *m);
 
 // variáveis globais para colocar nas estatísticas finais
 int soma_missoes = 0;
@@ -103,7 +104,8 @@ void avisa (struct evento *ev, struct fprio_t *lef) {
 
             struct evento *evento_entra = cria_evento(ev->instante, EVENTO_ENTRA, ev->h, ev->b, NULL, NULL);
             fprio_insere (lef, evento_entra, EVENTO_ENTRA, ev->instante);
-            printf ("%d: AVISA PORTEIRO BASE %d ADMITE HEROI %2d\n", ev->instante, ev->b->id, ev->h->id);
+            printf ("%d: AVISA PORTEIRO BASE %d ADMITE HEROI %2d\n", 
+                        ev->instante, ev->b->id, ev->h->id);
         }
     }
 }
@@ -197,17 +199,23 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
     for (int i = 0; i < w->n_bases; i++) {
         struct cjto_t *habilidades = cjto_cria(w->n_habilidades);
 
-        distancia[i] = sqrt(pow(ev->m->local_x - w->bases[i].local_x, 2) + pow(ev->m->local_y - w->bases[i].local_y, 2));
+        distancia[i] = sqrt(pow(ev->m->local_x - w->bases[i].local_x, 2) + 
+                            pow(ev->m->local_y - w->bases[i].local_y, 2));
     
         // atualiza habilidades da base com as dos heróis presentes
         for (int j = 0; j < w->n_herois; j++) {
             if (w->bases[i].presentes->flag[j] && w->herois[j].status != 0) {
-                struct cjto_t *uniao = cjto_uniao(habilidades, w->herois[j].habilidades);
-        
-                if (uniao != NULL) {
-                    cjto_destroi(habilidades);
-                    habilidades = uniao;
+                for (int k = 0; k < w->n_habilidades; k++) {
+                    if (w->herois[j].habilidades->flag[k])
+                        cjto_insere (habilidades, k);
                 }
+                
+                //struct cjto_t *uniao = cjto_uniao(habilidades, w->herois[j].habilidades);
+        
+                //if (uniao != NULL) {
+                //    cjto_destroi(habilidades);
+                //    habilidades = uniao;
+                //}
             }
         }
 
@@ -362,7 +370,8 @@ void eventos_iniciais (struct mundo *w, struct fprio_t *lef) {
         w->herois[i].base_id = extrai_aleat (0, w->n_bases - 1);
         instante = extrai_aleat (0, 4320);
 
-        struct evento *evento_chega = cria_evento(instante, EVENTO_CHEGA, &w->herois[i], &w->bases[w->herois[i].base_id], NULL, NULL);
+        struct evento *evento_chega = cria_evento(instante, EVENTO_CHEGA, &w->herois[i], 
+                                                &w->bases[w->herois[i].base_id], NULL, NULL);
         if (!evento_chega)
             return;
         fprio_insere(lef, evento_chega, EVENTO_CHEGA, instante);
@@ -385,7 +394,8 @@ void eventos_iniciais (struct mundo *w, struct fprio_t *lef) {
     fprio_insere(lef, evento_fim, EVENTO_FIM, instante);
 }
 
-struct evento *cria_evento (int instante, int tipo, struct heroi *h, struct base *b, struct base *b_aux, struct missao *m) {
+struct evento *cria_evento (int instante, int tipo, struct heroi *h, 
+                            struct base *b, struct base *b_aux, struct missao *m) {
     struct evento *novo_evento = malloc(sizeof(struct evento));
     if (!novo_evento) {
         return NULL; 

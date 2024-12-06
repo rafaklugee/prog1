@@ -1,4 +1,4 @@
-// programa principal do projeto "The Boys - 2024/2"
+// Programa principal do projeto "The Boys - 2024/2"
 // Autor: Rafael Ribeiro Kluge, GRR 20244439
 
 #include <stdio.h>
@@ -9,24 +9,24 @@
 #include "eventos.h"
 #include "mundo.h"
 
-// programa principal
+// Programa principal
 int main ()
 {
   int tipo, tempo;
   struct evento *evento_atual;
 
-  // iniciar as entidades e atributos do mundo
+  // Iniciar as entidades e atributos do mundo
   struct mundo *w = malloc (sizeof(struct mundo));
     if (!w)
       return -1;
   cria_mundo(w);
 
-  // criar a fila de eventos futuros
+  // Criar a fila de eventos futuros
   struct fprio_t *lef = fprio_cria();
     if (!lef)
       return -1;
 
-  // criar os eventos iniciais
+  // Criar os eventos iniciais
   eventos_iniciais(w, lef);
 
   w->relogio = 0;
@@ -68,7 +68,7 @@ int main ()
       case EVENTO_MISSAO:
         missao (evento_atual, w, lef);
         break;
-      // apresentar resultados
+      // Apresentar resultados
       case EVENTO_FIM:
         fim (w);
         break;
@@ -77,10 +77,10 @@ int main ()
     free (evento_atual);
   }
 
-  // destrói a lef
+  // Destrói a lef
   fprio_destroi (lef);
 
-  // destrói o mundo
+  // Destrói o mundo
   destroi_mundo(w);
 
   return (0) ;

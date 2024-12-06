@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "conjunto.h": "c"
+        "conjunto.h": "c",
+        "mundo.h": "c"
     }
 }

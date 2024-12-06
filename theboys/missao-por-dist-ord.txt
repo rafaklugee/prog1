@@ -78,11 +78,11 @@ void selection_sort(int dist[], int indice[], int tam) {
                 idxmenor = j;
         }
         if (i != idxmenor) {
-            // Ordenando
+            // Ordenando distâncias
             temp_dist = dist[i];
             dist[i] = dist[idxmenor];
             dist[idxmenor] = temp_dist;
-
+            // Ordenando índices
             temp_idx = indice[i];
             indice[i] = indice[idxmenor];
             indice[idxmenor] = temp_idx;

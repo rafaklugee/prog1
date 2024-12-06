@@ -11,6 +11,9 @@
 struct evento *cria_evento (int instante, int tipo, struct heroi *h, struct base *b, 
                             struct base *b_aux, struct missao *m);
 
+// protótipo de uma função de ordenação
+void selection_sort(int dist[], int indice[], int tam);
+
 // variáveis globais para colocar nas estatísticas finais
 int soma_missoes = 0;
 int max_missao = 0;
@@ -181,35 +184,37 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
         return;
 
     int distancia[w->n_bases];
+    int indice[w->n_bases];
     struct base *bmp = NULL;
 
     // valores para as estatísticas finais
     soma_missoes++;
 
-    printf ("%d: MISSAO %d TENT %d HAB REQ: [", ev->instante, ev->m->id, ev->m->n_tentativas);
-    for (int i = 0; i < w->n_habilidades; i++) {
-        if (ev->m->habilidades->flag[i]) {
-            printf (" %d", i);
-        }
-    }
+    printf ("%d: MISSAO %d TENT %d HAB REQ: [ ", ev->instante, ev->m->id, ev->m->n_tentativas);
+    cjto_imprime (ev->m->habilidades);
     printf (" ]\n");
     
 
     // calcula a distância de cada base ao local da missão M
     for (int i = 0; i < w->n_bases; i++) {
-        struct cjto_t *habilidades = cjto_cria(w->n_habilidades);
-
+        //struct cjto_t *habilidades = cjto_cria(w->n_habilidades);
         distancia[i] = sqrt(pow(ev->m->local_x - w->bases[i].local_x, 2) + 
                             pow(ev->m->local_y - w->bases[i].local_y, 2));
+        indice[i] = i;
+    }
+
+    selection_sort (distancia, indice, w->n_bases);
+
+    for (int i = 0; i < w->n_bases; i++) {
+        struct cjto_t *habilidades = cjto_cria(w->n_habilidades);
     
         // atualiza habilidades da base com as dos heróis presentes
         for (int j = 0; j < w->n_herois; j++) {
-            if (w->bases[i].presentes->flag[j] && w->herois[j].status != 0) {
+            if (cjto_pertence(w->bases[i].presentes, j) && w->herois[j].status != 0) {
                 for (int k = 0; k < w->n_habilidades; k++) {
-                    if (w->herois[j].habilidades->flag[k])
-                        cjto_insere (habilidades, k);
+                    if (cjto_pertence(w->herois[j].habilidades, k))
+                        cjto_insere(habilidades, k);
                 }
-                
                 //struct cjto_t *uniao = cjto_uniao(habilidades, w->herois[j].habilidades);
         
                 //if (uniao != NULL) {
@@ -222,31 +227,37 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
         // verifica a os heróis que certa base tem, tal como sua distância da missão
         //printf ("%d: MISSAO %d BASE %d DIST %d HEROIS [", ev->instante, ev->m->id, i, distancia[i]);
         //for (int j = 0; j < w->n_herois; j++) {
-        //    if (w->bases[i].presentes->flag[j])
-        //    printf (" %d", j);
+        //    if (cjto_pertence(w->bases[i].presentes, j))
+        //        printf (" %d", j);
         //}
         //printf (" ]\n");
 
-        //// verifica a os heróis que certa base tem, tal como sua distância da missão
+        // verifica a os heróis que certa base tem, tal como sua distância da missão
         //for (int j = 0; j < w->n_herois; j++) {
-        //    if (w->bases[i].presentes->flag[j]) {
+        //    if (cjto_pertence(w->bases[i].presentes, j)) {
         //        printf ("%d: MISSAO %d HAB HEROI %d [ ", ev->instante, ev->m->id, j);
         //        cjto_imprime (w->herois[j].habilidades);
         //        printf (" ]\n");    
         //    }
         //}    
 
-        //// imprime a união das habilidades da base
+        // imprime a união das habilidades da base
         //printf ("%d: MISSAO %d UNIAO HAB BASE %d [ ", ev->instante, ev->m->id, i);
         //cjto_imprime (habilidades);
         //printf (" ]\n");
 
         // encontra BMP = base mais próxima da missão cujos heróis possam cumpri-la
-        if (cjto_contem(habilidades, ev->m->habilidades)) {
-            if (!bmp || distancia[i] < distancia[bmp->id])
-                bmp = &w->bases[i];
-        }
+        //if (cjto_contem(habilidades, ev->m->habilidades)) {
+        //    if (!bmp || distancia[i] < distancia[bmp->id])
+        //        bmp = &w->bases[i];
+        //}
 
+        // encontra BMP = base mais próxima da missão cujos heróis possam cumpri-la
+        if (cjto_contem(habilidades, ev->m->habilidades)) {
+                bmp = &w->bases[i];
+                cjto_destroi(habilidades);
+                break;
+        }
         cjto_destroi(habilidades);
     }
 
@@ -261,16 +272,14 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
 
         ev->m->status = 1; // missão cumprida
         for (int i = 0; i < w->n_herois; i++) {
-            if (bmp->presentes->flag[i] && w->herois[i].status != 0) {
+            if (cjto_pertence (bmp->presentes, i) && w->herois[i].status != 0) {
                 int risco = ev->m->perigo / (w->herois[i].paciencia + w->herois[i].experiencia + 1.0);
                 int random = extrai_aleat(0, 30);
                 if (risco > random) {
-                    //printf ("risco foi maior (risco = %d e random = %d)\n", risco, random);
                     struct evento *evento_morre = cria_evento(ev->instante, EVENTO_MORRE, &w->herois[i], bmp, NULL, ev->m);
                     fprio_insere(lef, evento_morre, EVENTO_MORRE, ev->instante);
                 }
                 else {
-                    //printf ("risco foi menor (risco = %d e random = %d)\n", risco, random);
                     w->herois[i].experiencia++;
                 }
             }
@@ -280,11 +289,8 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
         w->n_cumpridas++;
         bmp->n_missoes_base++;
 
-        printf ("%d: MISSAO %d CUMPRIDA BASE %d HABS: [", ev->instante, ev->m->id, bmp->id);
-        for (int i = 0; i < w->n_habilidades; i++) {
-            if (ev->m->habilidades->flag[i])
-                printf (" %d", i);
-        }
+        printf ("%d: MISSAO %d CUMPRIDA BASE %d HABS: [ ", ev->instante, ev->m->id, bmp->id);
+        cjto_imprime (ev->m->habilidades);
         printf (" ]\n");
     }
     else {
@@ -305,20 +311,14 @@ void fim (struct mundo *w) {
     for (int i = 0; i < w->n_herois; i++) {
         struct heroi *h = &w->herois[i];
         if (h->status == 1) {
-            printf ("HEROI %2d VIVO PAC %4d EXP %4d HABS [", i, h->paciencia, h->experiencia);
-                for (int j = 0; j < w->n_habilidades; j++) {
-                    if (h->habilidades->flag[j])
-                        printf (" %d", j);
-                }
+            printf ("HEROI %2d VIVO PAC %4d EXP %4d HABS [ ", i, h->paciencia, h->experiencia);
+            cjto_imprime (h->habilidades);
             printf (" ]\n");
         }
         else {
             n_herois_mortos++;
-            printf ("HEROI %2d MORTO PAC %4d EXP %4d HABS [", i, h->paciencia, h->experiencia);
-                for (int k = 0; k < w->n_habilidades; k++) {
-                    if (h->habilidades->flag[k])
-                        printf (" %d", k);
-                }
+            printf ("HEROI %2d MORTO PAC %4d EXP %4d HABS [ ", i, h->paciencia, h->experiencia);
+            cjto_imprime (h->habilidades);
             printf (" ]\n");
         }
     }
@@ -418,4 +418,26 @@ int extrai_aleat (int ini, int cap) {
     int valor = ini + rand() % (cap - ini + 1);
 
     return valor;
+}
+
+void selection_sort(int dist[], int indice[], int tam) {
+    int i, j, idxmenor, temp_idx, temp_dist;
+
+    for (i = 0; i < tam - 1; i++) {
+        idxmenor = i;
+        for (j = i + 1; j < tam; j++) {
+            if (dist[idxmenor] > dist[j])
+                idxmenor = j;
+        }
+        if (i != idxmenor) {
+            // Ordenando distâncias
+            temp_dist = dist[i];
+            dist[i] = dist[idxmenor];
+            dist[idxmenor] = temp_dist;
+            // Ordenando índices
+            temp_idx = indice[i];
+            indice[i] = indice[idxmenor];
+            indice[idxmenor] = temp_idx;
+        }
+    }
 }

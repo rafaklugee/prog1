@@ -1,0 +1,91 @@
+// calcula a distância de cada base ao local da missão M
+    for (int i = 0; i < w->n_bases; i++) {
+        //struct cjto_t *habilidades = cjto_cria(w->n_habilidades);
+        distancia[i] = sqrt(pow(ev->m->local_x - w->bases[i].local_x, 2) + 
+                                pow(ev->m->local_y - w->bases[i].local_y, 2));
+        indice[i] = i;
+    }
+
+    selection_sort(distancia, indice, w->n_bases);
+
+    for (int i = 0; i < w->n_bases; i++) {
+
+        struct cjto_t *habilidades = cjto_cria(w->n_habilidades);
+    
+        //atualiza habilidades da base com as dos heróis presentes
+        for (int j = 0; j < w->n_herois; j++) {
+            if (w->bases[i].presentes->flag[j] && w->herois[j].status != 0) {
+                struct cjto_t *uniao = cjto_uniao(habilidades, w->herois[j].habilidades);
+        
+                if (uniao != NULL) {
+                    cjto_destroi(habilidades);
+                    habilidades = uniao;
+                }
+            }
+        }
+
+
+
+
+    
+
+    //    // verifica a os heróis que certa base tem, tal como sua distância da missão
+    //    printf ("%d: MISSAO %d BASE %d DIST %d HEROIS [", ev->instante, ev->m->id, i, distancia[i]);
+    //    for (int j = 0; j < w->n_herois; j++) {
+    //        if (w->bases[i].presentes->flag[j])
+    //        printf (" %d", j);
+    //    }
+    //    printf (" ]\n");
+
+    //    // verifica a os heróis que certa base tem, tal como sua distância da missão
+    //    for (int j = 0; j < w->n_herois; j++) {
+    //        if (w->bases[i].presentes->flag[j]) {
+    //            printf ("%d: MISSAO %d HAB HEROI %d [ ", ev->instante, ev->m->id, j);
+    //            cjto_imprime (w->herois[j].habilidades);
+    //            printf (" ]\n");    
+    //        }
+    //    }    
+
+    //    // imprime a união das habilidades da base
+    //    printf ("%d: MISSAO %d UNIAO HAB BASE %d [ ", ev->instante, ev->m->id, i);
+    //    cjto_imprime (habilidades);
+    //    printf (" ]\n");
+
+        //encontra BMP = base mais próxima da missão cujos heróis possam cumpri-la
+        if (cjto_contem(habilidades, ev->m->habilidades)) {
+                bmp = &w->bases[i];
+                cjto_destroi(habilidades);
+                break;
+        }
+
+        //cjto_destroi(habilidades);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+void selection_sort(int dist[], int indice[], int tam) {
+    int i, j, idxmenor, temp_idx, temp_dist;
+
+    for (i = 0; i < tam - 1; i++) {
+        idxmenor = i;
+        for (j = i + 1; j < tam; j++) {
+            if (dist[idxmenor] > dist[j])
+                idxmenor = j;
+        }
+        if (i != idxmenor) {
+            // Ordenando
+            temp_dist = dist[i];
+            dist[i] = dist[idxmenor];
+            dist[idxmenor] = temp_dist;
+
+            temp_idx = indice[i];
+            indice[i] = indice[idxmenor];
+            indice[idxmenor] = temp_idx;
+        }
+    }
+}

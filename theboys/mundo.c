@@ -5,10 +5,11 @@
 #include "fprio.h"
 
 void cria_mundo (struct mundo *w) {
+    int tam_cjto_habilidades;
+    
     // Inicializando estados do iniciais do mundo
     w->tempo_inicial = 0;
-    w->tempo_final = 50000;
-    //w->tempo_final = 525600 ;
+    w->tempo_final = 525600;
     w->tam_mundo = 20000;
 
     w->n_habilidades = 10;
@@ -16,8 +17,6 @@ void cria_mundo (struct mundo *w) {
     w->n_bases = 10;
     w->n_missoes = w->tempo_final / 100;
     w->n_cumpridas = 0;
-
-    int tam_cjto_habilidades;
 
     // Inicializando os heróis
     w->herois = malloc(sizeof(struct heroi) * w->n_herois);
@@ -43,13 +42,6 @@ void cria_mundo (struct mundo *w) {
             int habilidade = extrai_aleat(0, w->n_habilidades - 1);
             cjto_insere(w->herois[i].habilidades, habilidade);
         }
-        // Verificando se as habilidades foram inseridas
-        //printf ("HEROI %d PAC: %d HABILIDADES: [", i, w->herois[i].paciencia);
-        //for (int j = 0; j < w->n_habilidades; j++) {
-        //    if (w->herois[i].habilidades->flag[j])
-        //        printf (" %d", j);
-        //    }
-        //printf (" ]\n");
     }
 
     // Inicializando as bases
@@ -64,6 +56,7 @@ void cria_mundo (struct mundo *w) {
         w->bases[i].lotacao = extrai_aleat(3, 10);
         w->bases[i].n_missoes_base = 0;
         w->bases[i].fila_max = 0;
+        w->bases[i].espera = 0;
         w->bases[i].presentes = cjto_cria(w->n_herois);
         w->bases[i].lst_espera = lista_cria();
 
@@ -95,15 +88,5 @@ void cria_mundo (struct mundo *w) {
             int habilidade = extrai_aleat(0, w->n_habilidades - 1);
             cjto_insere(w->missoes[i].habilidades, habilidade);
         }
-        //printf ("\nMISSAO %d HABS: [", i);
-        //cjto_imprime(w->missoes[i].habilidades);
-        //printf (" ]\n");
-
-        // Verificando se as habilidades foram inseridas
-        //for (int j = 0; j < w->n_missoes; j++) {
-        //    if (w->missoes[i].habilidades->flag[j])
-        //        printf (" %d", j);
-        //    }
-        //printf ("\n");
     }
 }

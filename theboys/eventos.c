@@ -194,10 +194,11 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
         w->bases[i].tmp_dist = distancia;
     }
 
-    // Ordena as distâncias das bases à missão
+    // Copia as structs das bases para um vetor de structs
     for (int i = 0; i < w->n_bases; i++) 
         v_distancia[i] = w->bases[i];
 
+    // Ordena as distâncias (vetor de structs) das bases ao local da missão M
     for (int i = 0; i < w->n_bases; i++)
         selection_sort (v_distancia, w->n_bases);
 

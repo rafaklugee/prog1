@@ -55,8 +55,6 @@ void chega (struct evento *ev, struct fprio_t *lef) {
 }
 
 void espera (struct evento *ev, struct fprio_t *lef) {
-    if (ev->h->status == 0)
-        return;
     printf ("%d: ESPERA HEROI %2d BASE %d (%2d)\n", 
                 ev->instante, ev->h->id, ev->b->id, lista_tamanho(ev->b->lst_espera));
     
@@ -73,10 +71,7 @@ void espera (struct evento *ev, struct fprio_t *lef) {
     fprio_insere(lef, evento_avisa, EVENTO_AVISA, ev->instante);
 }
 
-void desiste (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
-    if (ev->h->status == 0)
-        return;
-    
+void desiste (struct evento *ev, struct mundo *w, struct fprio_t *lef) { 
     // Escolhe uma base destino D aleatória
     struct base *b_aleat = &w->bases[extrai_aleat(0, w->n_bases - 1)];
 
@@ -265,18 +260,21 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
         cjto_destroi(habilidades);
     }
 
-    free(v_distancia);
-
     // Se houver uma BMP
     if (bmp) {
-        // Valores para as estatísticas finais
-        w->n_cumpridas++;
-        for (int i = 0; i < w->n_bases; i++)
+        // Encontrando a bmp no vetor de bases do mundo
+        for (int i = 0; i < w->n_bases; i++) {
             if (w->bases[i].id == bmp->id) {
                 w->bases[i].n_missoes_base++;
                 bmp = &w->bases[i];
+                break;
             }
+        }
 
+        // Valores para as estatísticas finais
+        w->n_cumpridas++;
+        bmp->n_missoes_base++;
+                
         if (ev->m->n_tentativas < min_missao)
             min_missao = ev->m->n_tentativas;
         if (ev->m->n_tentativas > max_missao)
@@ -310,6 +308,7 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
         fprio_insere(lef, evento_missao, EVENTO_MISSAO, ev->instante + (24*60));
         printf ("%d: MISSAO %d IMPOSSIVEL\n", ev->instante, ev->m->id);
     }
+    free(v_distancia);
 }
 
 void fim (struct mundo *w) {
@@ -387,6 +386,7 @@ void eventos_iniciais (struct mundo *w, struct fprio_t *lef) {
                                                 &w->bases[w->herois[i].base_id], NULL, NULL);
         if (!evento_chega)
             return;
+
         fprio_insere(lef, evento_chega, EVENTO_CHEGA, instante);
     }
 
@@ -396,6 +396,7 @@ void eventos_iniciais (struct mundo *w, struct fprio_t *lef) {
         struct evento *evento_missao = cria_evento(instante, EVENTO_MISSAO, NULL, NULL, NULL, &w->missoes[i]);
         if (!evento_missao)
             return;
+            
         fprio_insere(lef, evento_missao, EVENTO_MISSAO, instante);
     }
 

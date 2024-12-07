@@ -2,6 +2,7 @@
     "files.associations": {
         "conjunto.h": "c",
         "mundo.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "eventos.h": "c"
     }
 }

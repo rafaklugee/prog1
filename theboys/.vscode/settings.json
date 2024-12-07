@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "conjunto.h": "c",
-        "mundo.h": "c"
+        "mundo.h": "c",
+        "stdio.h": "c"
     }
 }

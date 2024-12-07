@@ -143,6 +143,8 @@ int lista_consulta (struct lista_t *lst, int *item, int pos) {
         *item = aux->valor;
     }
 
+    printf ("O ITEM CONSULTADO EH: %d\n", *item);
+
     return lst->tamanho;
 }
 

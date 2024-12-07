@@ -48,7 +48,7 @@ int main ()
         espera (evento_atual, lef);
         break;
       case EVENTO_AVISA: 
-        avisa (evento_atual, lef);
+        avisa (evento_atual, w, lef);
         break;
       case EVENTO_VIAJA:
         viaja (evento_atual, lef);

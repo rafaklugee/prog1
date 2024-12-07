@@ -20,7 +20,7 @@ void espera (struct evento *ev, struct fprio_t *lef);
 
 void desiste (struct evento *ev, struct mundo *w, struct fprio_t *lef);
 
-void avisa (struct evento *ev, struct fprio_t *lef);
+void avisa (struct evento *ev, struct mundo *w, struct fprio_t *lef);
 
 void entra (struct evento *ev, struct fprio_t *lef);
 

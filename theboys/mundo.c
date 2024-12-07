@@ -10,6 +10,7 @@ void cria_mundo (struct mundo *w) {
     // Inicializando estados do iniciais do mundo
     w->tempo_inicial = 0;
     w->tempo_final = 525600;
+    //w->tempo_final = 200000;
     w->tam_mundo = 20000;
 
     w->n_habilidades = 10;
@@ -56,7 +57,7 @@ void cria_mundo (struct mundo *w) {
         w->bases[i].lotacao = extrai_aleat(3, 10);
         w->bases[i].n_missoes_base = 0;
         w->bases[i].fila_max = 0;
-        w->bases[i].espera = 0;
+        //w->bases[i].espera = 0;
         w->bases[i].presentes = cjto_cria(w->n_herois);
         w->bases[i].lst_espera = lista_cria();
 

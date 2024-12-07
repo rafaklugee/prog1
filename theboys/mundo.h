@@ -22,7 +22,7 @@ struct base {
     int local_x, local_y;
     int n_missoes_base;
     int fila_max;
-    int espera; // 1 = espera; 0 = não espera
+    //int espera; // 1 = espera; 0 = não espera
     int tmp_dist;
     struct cjto_t *presentes;
     struct lista_t *lst_espera;

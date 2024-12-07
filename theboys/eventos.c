@@ -281,7 +281,7 @@ void missao (struct evento *ev, struct mundo *w, struct fprio_t *lef) {
 
         ev->m->status = 1; // Missão cumprida
         for (int i = 0; i < w->n_herois; i++) {
-            if (cjto_pertence(bmp->presentes, i) && w->herois[i].status != 0) {
+            if (cjto_pertence(bmp->presentes, i)) {
                 struct heroi *h = &w->herois[i];
 
                 int risco = ev->m->perigo / (w->herois[i].paciencia + w->herois[i].experiencia + 1.0);

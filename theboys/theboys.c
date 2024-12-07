@@ -33,7 +33,6 @@ int main ()
   w->eventos_tratados = 0;
 
   while (w->relogio != w->tempo_final) {
-
     evento_atual = fprio_retira (lef, &tipo, &tempo) ;
     if (!evento_atual) 
        return -1;
@@ -73,6 +72,7 @@ int main ()
         fim (w);
         break;
     }
+    
     w->eventos_tratados++;
     free (evento_atual);
   }
